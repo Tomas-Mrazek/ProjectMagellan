@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.jaktoviditoka.projectmagellan.device.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.*;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 
 @Service
@@ -68,7 +68,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public void setBrightness(Device device, Brightness brightness) {
+    public void setBrightness(Device device, BrightnessRequest brightness) {
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
             .scheme("http")
             .host(device.getIp().getHostAddress())
@@ -92,7 +92,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public void setHue(Device device, Hue hue) {
+    public void setHue(Device device, HueRequest hue) {
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
             .scheme("http")
             .host(device.getIp().getHostAddress())
@@ -116,7 +116,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public void setSaturation(Device device, Saturation saturation) {
+    public void setSaturation(Device device, SaturationRequest saturation) {
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
             .scheme("http")
             .host(device.getIp().getHostAddress())
@@ -140,7 +140,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public void setColorTemperature(Device device, ColorTemperature colorTemperature) {
+    public void setColorTemperature(Device device, ColorTemperatureRequest colorTemperature) {
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
             .scheme("http")
             .host(device.getIp().getHostAddress())

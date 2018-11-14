@@ -1,14 +1,17 @@
 package cz.jaktoviditoka.projectmagellan.device;
 
 import java.net.InetAddress;
+import java.util.UUID;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(of = "uuid")
 @Data
 public class Device {
 
-    private final String authToken = "4WiXtaccd3SZGQzl3OnYfAS86WYlKjx8";
-
+    private UUID uuid;
+    private String authToken;
     private String name;
     private InetAddress ip;
     private int port;

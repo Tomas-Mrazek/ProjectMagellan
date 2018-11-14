@@ -1,7 +1,7 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service;
 
 import cz.jaktoviditoka.projectmagellan.device.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.*;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.state.*;
 
 public interface StateService {
 
@@ -11,19 +11,19 @@ public interface StateService {
 
     BrightnessResponse getBrightness(Device device);
 
-    void setBrightness(Device device, Brightness brightness);
+    void setBrightness(Device device, BrightnessRequest brightness);
 
     HueResponse getHue(Device device);
 
-    void setHue(Device device, Hue hue);
+    void setHue(Device device, HueRequest hue);
 
     SaturationResponse getSaturation(Device device);
 
-    void setSaturation(Device device, Saturation saturation);
+    void setSaturation(Device device, SaturationRequest saturation);
 
     ColorTemperatureResponse getColorTemperature(Device device);
 
-    void setColorTemperature(Device device, ColorTemperature colorTemperature);
+    void setColorTemperature(Device device, ColorTemperatureRequest colorTemperature);
 
     ColorMode getColorMode(Device device);
 

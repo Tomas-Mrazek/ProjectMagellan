@@ -12,6 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot-starter.version>2.1.0.RELEASE</spring-boot-starter.version>
         <javafx-fxml.version>11.0.1</javafx-fxml.version>
+        <controlsfx.version>9.0.0</controlsfx.version>
         <lombok.version>1.18.4</lombok.version>
 
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -47,6 +48,12 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx-fxml.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>${controlsfx.version}</version>
         </dependency>
 
         <dependency>

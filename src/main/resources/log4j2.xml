@@ -7,6 +7,9 @@
         </Console>
     </Appenders>
     <Loggers>
+        <Logger name="org.springframework.web.client" level="debug" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
         <Logger name="cz.jaktoviditoka" level="debug" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>

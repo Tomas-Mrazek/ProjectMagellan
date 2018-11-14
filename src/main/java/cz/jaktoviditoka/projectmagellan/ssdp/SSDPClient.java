@@ -8,6 +8,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import cz.jaktoviditoka.projectmagellan.device.Device;
 import lombok.extern.slf4j.Slf4j;
@@ -52,9 +53,11 @@ public class SSDPClient {
                 if (received.contains("nanoleaf_aurora:light")) {
                     int indexLocation = received.indexOf("Location:") + 10;
                     int indexName = received.indexOf("nl-devicename:") + 15;
+                    int indexUUID = received.indexOf("USN: uuid:") + 10;
                     String urlString = received.substring(indexLocation, received.indexOf("\r\n", indexLocation));
                     URL url = new URL(urlString);
                     Device device = new Device();
+                    device.setUuid(UUID.fromString(received.substring(indexUUID, received.indexOf("\r\n", indexUUID))));
                     device.setName(received.substring(indexName, received.indexOf("\r\n", indexName)));
                     device.setIp(InetAddress.getByName(url.getHost()));
                     device.setPort(url.getPort());

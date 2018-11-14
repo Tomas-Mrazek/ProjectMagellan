@@ -1,6 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.ControllerInfoResponse;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.info.ControllerInfoResponse;
 
 public interface ControllerInfoService {
 

@@ -11,9 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @SpringBootApplication
 public class ProjectMagellan extends Application {
 
@@ -32,7 +30,7 @@ public class ProjectMagellan extends Application {
     public void start(Stage stage) throws IOException {
         fxmlLoader.setLocation(getClass().getResource("/nanoleaf-aurora.fxml"));
         rootNode = fxmlLoader.load();
-        stage.setScene(new Scene(rootNode, 640, 480));
+        stage.setScene(new Scene(rootNode));
         stage.centerOnScreen();
         stage.show();
     }

@@ -1,11 +1,12 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.Authorization;
+import cz.jaktoviditoka.projectmagellan.device.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.auth.Authorization;
 
 public interface AuthorizationService {
 
-    Authorization addUser();
+    Authorization addUser(Device device);
 
-    void deleteUser();
+    void deleteUser(Device device);
 
 }
