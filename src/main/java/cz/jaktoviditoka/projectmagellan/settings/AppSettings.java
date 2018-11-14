@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AppSettings {
 
     private Settings settings;
-    private final File file = new File("magellan-config.json");
+    private final File file = new File("magellan-settings.json");
 
     @Autowired
     private ObjectMapper mapper;
@@ -33,7 +33,7 @@ public class AppSettings {
 
     public void saveSettings() throws JsonGenerationException, JsonMappingException, IOException {
         log.debug("saving settings");
-        mapper.writeValue(file, settings);
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, settings);
     }
 
     private void loadSettings() throws JsonParseException, JsonMappingException, IOException {

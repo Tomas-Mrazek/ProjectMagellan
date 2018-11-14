@@ -19,3 +19,6 @@
 
 # Logs
 *.log
+
+# Specific
+magellan-settings\.json
