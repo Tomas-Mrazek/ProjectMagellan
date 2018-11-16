@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Set;
 
-import cz.jaktoviditoka.projectmagellan.device.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.state.*;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import javafx.fxml.FXML;
@@ -19,6 +19,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -58,10 +59,13 @@ public class NanoleafAuroraController {
     @FXML
     Slider colorTemperature;
 
-    @FXML
-    public void initialize() throws IOException {
+    public void initialize() {
         devices = deviceModel.getDevices();
         device = devices.iterator().next();
+
+        if (device == null) {
+            return;
+        }
 
         OnResponse onResponse = stateService.isOn(device);
         power.setSelected(onResponse.isValue());
@@ -79,10 +83,9 @@ public class NanoleafAuroraController {
         ColorMode colorMode = stateService.getColorMode(device);
         SelectionModel<Tab> selectionModel = colorModeTab.getSelectionModel();
         switch (colorMode) {
-            case COLOR_TEMPERATURE: {
+            case COLOR_TEMPERATURE:
                 selectionModel.select(whiteTab);
                 break;
-            }
             case EFFECT:
                 selectionModel.select(effectTab);
                 break;
@@ -122,8 +125,34 @@ public class NanoleafAuroraController {
     }
 
     @FXML
+    private void getEffect() {
+        //
+    }
+
+    @FXML
     void discover() throws IOException {
         devices = deviceModel.discover();
+        devices.forEach(d -> {
+            Image image = new Image("image/nanoleaf-aurora-transparent.png");
+            ImageView deviceView = new ImageView(image);
+            StackPane pane = new StackPane();
+            deviceView.setPreserveRatio(true);
+            deviceView.setFitWidth(100);
+            // device.fitWidthProperty().bind(hboxDevices.heightProperty());
+            // device.fitHeightProperty().bind(hboxDevices.heightProperty());
+            deviceView.setOnMouseClicked(me -> {
+                log.debug("Mouse clicked on ImageView.");
+                device = d;
+                pane.setStyle("-fx-background-color: BLACK;");
+                hboxDevices.getChildren().forEach(p -> {
+                    p.getStyleClass().clear();
+                });
+            });
+
+            pane.getChildren().add(deviceView);
+            hboxDevices.getChildren().add(pane);
+        });
+
     }
 
     @FXML
@@ -132,20 +161,8 @@ public class NanoleafAuroraController {
     }
 
     @FXML
-    void isOn() {
-        devices.forEach(d -> {
-            log.debug("isOn -> \n{}", stateService.isOn(d));
-        });
-    }
-
-    @FXML
-    void setOn() {
-        OnRequest onRequest = new OnRequest();
-        onRequest.setOn(new On(false));
-        devices.forEach(d -> {
-            log.debug("setOn -> \n{}", onRequest);
-            stateService.setOn(d, onRequest);
-        });
+    void unpair() {
+        deviceModel.unpair(device);
     }
 
     @FXML
@@ -205,6 +222,7 @@ public class NanoleafAuroraController {
 
     @FXML
     void addDiscoveredDevice() {
+        log.debug("Current device: {}", device);
         Image image = new Image("image/nanoleaf-aurora-transparent.png");
         ImageView device = new ImageView(image);
         device.setPreserveRatio(true);

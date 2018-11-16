@@ -41,8 +41,8 @@
                             </rowConstraints>
                             <children>
                                 <Button fx:id="discoverButton" layoutX="10.0" layoutY="88.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#discover" text="DISCOVER" textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="isOnButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#isOn" text="IS ON" textAlignment="CENTER" wrapText="true" GridPane.rowIndex="1" />
-                                <Button fx:id="setOnButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setOn" text="SET ON" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <Button fx:id="pairButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#pair" text="PAIR" textAlignment="CENTER" wrapText="true" GridPane.rowIndex="1" />
+                                <Button fx:id="unpairButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#unpair" text="UNPAIR" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                 <Button fx:id="getBrightnessButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#getBrightness" text="GET BRIGHTNESS" textAlignment="CENTER" wrapText="true" GridPane.rowIndex="2" />
                                 <Button fx:id="setBrightnessButton" layoutX="121.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setBrightness" text="SET BRIGHTNESS" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                 <Button fx:id="getHueButton" layoutX="10.0" layoutY="119.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#getHue" text="GET HUE" textAlignment="CENTER" wrapText="true" GridPane.rowIndex="3" />
@@ -53,6 +53,7 @@
                                 <Button fx:id="setColorTemperatureButton" layoutX="121.0" layoutY="337.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setColorTemperature" text="SET COLOR TEMPERATURE" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                 <Button fx:id="getColorModeButton" layoutX="10.0" layoutY="374.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#getColorMode" text="GET COLOR MODE" textAlignment="CENTER" wrapText="true" GridPane.rowIndex="6" />
                         <Button fx:id="addDiscoveredDeviceButton" layoutX="10.0" layoutY="504.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addDiscoveredDevice" text="ADD DISCOVERED DEVICE" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Button fx:id="getEffectButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#getEffect" text="GET EFFECT" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" />
                             </children>
                         </GridPane>
                     </children>
@@ -63,7 +64,7 @@
                      <children>
                       <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="150.0">
                            <children>
-                              <ScrollPane fitToHeight="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <ScrollPane fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <content>
                                     <AnchorPane>
                                        <children>

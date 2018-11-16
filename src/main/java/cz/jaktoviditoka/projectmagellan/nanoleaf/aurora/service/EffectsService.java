@@ -2,19 +2,20 @@ package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service;
 
 import java.util.List;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.effect.Effect;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.effect.EffectName;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.effect.EffectNameRequest;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.effect.EffectRequest;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.Effect;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.EffectName;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.EffectNameRequest;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.EffectRequest;
 
 public interface EffectsService {
 
-    EffectName getCurrentEffect();
+    EffectName getCurrentEffect(Device device);
 
-    void setCurrentEffect(EffectNameRequest effectName);
+    void setCurrentEffect(Device device, EffectNameRequest effectName);
 
-    List<EffectName> getEffects();
+    List<EffectName> getEffects(Device device);
 
-    Effect createEffect(EffectRequest effect);
+    Effect createEffect(Device device, EffectRequest effect);
 
 }

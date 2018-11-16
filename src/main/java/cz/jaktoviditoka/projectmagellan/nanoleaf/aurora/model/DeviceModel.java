@@ -1,5 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +9,9 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import cz.jaktoviditoka.projectmagellan.device.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.auth.Authorization;
+import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.AuthorizationService;
 import cz.jaktoviditoka.projectmagellan.settings.AppSettings;
 import cz.jaktoviditoka.projectmagellan.ssdp.SSDPClient;
@@ -43,13 +45,15 @@ public class DeviceModel {
     }
 
     public Set<Device> discover() throws IOException {
-        Set<Device> newDevices = ssdpclient.mSearch();
+        Set<Device> newDevices = ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA);
+        log.debug("discover - devices - \n {}", devices);
+        log.debug("discover - newDevices - \n {}", newDevices);
         newDevices.removeAll(devices);
         return newDevices;
     }
 
     public void pair(Device device) {
-        if (!device.getAuthToken().isEmpty()) {
+        if (StringUtils.isNotEmpty(device.getAuthToken())) {
             log.warn("Device is already paired.");
         }
         Authorization auth = authService.addUser(device);
@@ -58,7 +62,7 @@ public class DeviceModel {
         try {
             appSettings.saveSettings();
         } catch (IOException e) {
-            log.error("Failed to save paired device to settings.", e);
+            log.error("Failed to save paired device.", e);
         }
     }
 

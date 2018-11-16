@@ -7,8 +7,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.jaktoviditoka.projectmagellan.device.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.auth.Authorization;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.AuthorizationService;
 
 @Service
@@ -28,7 +28,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             .port(device.getPort())
             .path(BASE_URL + NEW)
             .build();
-        ResponseEntity<Authorization> response = restTemplate.getForEntity(uriComponents.toUri(),
+        ResponseEntity<Authorization> response = restTemplate.postForEntity(uriComponents.toUri(), null,
                 Authorization.class);
         return response.getBody();
     }

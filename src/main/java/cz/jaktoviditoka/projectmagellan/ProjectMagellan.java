@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 public class ProjectMagellan extends Application {
 
     private ConfigurableApplicationContext context;
-    private Parent rootNode;
     private FXMLLoader fxmlLoader;
 
     @Override
@@ -29,7 +28,7 @@ public class ProjectMagellan extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         fxmlLoader.setLocation(getClass().getResource("/nanoleaf-aurora.fxml"));
-        rootNode = fxmlLoader.load();
+        Parent rootNode = fxmlLoader.load();
         stage.setScene(new Scene(rootNode));
         stage.centerOnScreen();
         stage.show();

@@ -1,9 +1,7 @@
 package cz.jaktoviditoka.projectmagellan.settings;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +12,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import cz.jaktoviditoka.projectmagellan.device.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,19 +25,23 @@ public class AppSettings {
     private ObjectMapper mapper;
 
     @PostConstruct
-    private void init() throws JsonParseException, JsonMappingException, IOException {
+    private void init() throws IOException {
         loadSettings();
     }
 
-    public void saveSettings() throws JsonGenerationException, JsonMappingException, IOException {
-        log.debug("saving settings");
+    public void saveSettings() throws IOException {
+        log.debug("saving settings -> \n{}", settings);
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, settings);
     }
 
-    private void loadSettings() throws JsonParseException, JsonMappingException, IOException {
-        log.debug("loading settings");
+    private void loadSettings() throws IOException {
         if (file.exists()) {
-            settings = mapper.readValue(file, Settings.class);
+            try {
+                settings = mapper.readValue(file, Settings.class);
+                log.debug("loading settings -> \n{}", settings);
+            } catch (MismatchedInputException e) {
+                log.error("Could not load settings.");
+            }
         } else {
             file.createNewFile();
             createSettings();
@@ -47,11 +49,15 @@ public class AppSettings {
     }
 
     private void createSettings() {
+        log.debug("creating settings");
         settings = new Settings();
         settings.setDevices(new HashSet<>());
     }
 
     public Set<Device> getDevices() {
+        if (settings.getDevices() == null) {
+            settings.setDevices(new HashSet<>());
+        }
         return settings.getDevices();
     }
 

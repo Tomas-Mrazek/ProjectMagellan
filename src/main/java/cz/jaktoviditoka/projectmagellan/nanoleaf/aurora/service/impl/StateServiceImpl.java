@@ -7,8 +7,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.jaktoviditoka.projectmagellan.device.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.state.*;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 
 @Service

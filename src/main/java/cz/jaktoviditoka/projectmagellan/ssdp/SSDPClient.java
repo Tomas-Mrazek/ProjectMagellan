@@ -10,7 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import cz.jaktoviditoka.projectmagellan.device.Device;
+import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,17 +22,24 @@ public class SSDPClient {
 
     int timeout = 5 * 1000;
 
-    public Set<Device> mSearch() throws IOException {
+    public Set<Device> mSearch(BaseDeviceType deviceType) throws IOException {
         Set<Device> devices = new HashSet<>();
-        
+
         byte[] receiveData = new byte[1024];
 
         StringBuilder request = new StringBuilder();
-        request.append("M-SEARCH * HTTP/1.1\r\n");
-        request.append("Host: " + SSDP_IP + ":" + SSDP_PORT + "\r\n");
-        request.append("Man: ssdp:discover\r\n");
-        request.append("ST: nanoleaf_aurora:light\n");
-        request.append("MX: 3\r\n");
+
+        switch (deviceType) {
+            case NANOLEAF_AURORA:
+                request.append("M-SEARCH * HTTP/1.1\r\n");
+                request.append("Host: " + SSDP_IP + ":" + SSDP_PORT + "\r\n");
+                request.append("Man: ssdp:discover\r\n");
+                request.append("ST: nanoleaf_aurora:light\n");
+                request.append("MX: 3\r\n");
+                break;
+            default:
+                throw new IllegalArgumentException("DeviceType not provided.");
+        }
 
         log.debug("request \n{}", request);
 
@@ -47,7 +55,7 @@ public class SSDPClient {
                         InetAddress.getLocalHost(), SSDP_PORT);
                 socket.receive(receivePacket);
                 String received = new String(receivePacket.getData(), 0, receivePacket.getLength());
-                
+
                 log.debug("response {}\n", received);
 
                 if (received.contains("nanoleaf_aurora:light")) {
@@ -56,7 +64,7 @@ public class SSDPClient {
                     int indexUUID = received.indexOf("USN: uuid:") + 10;
                     String urlString = received.substring(indexLocation, received.indexOf("\r\n", indexLocation));
                     URL url = new URL(urlString);
-                    Device device = new Device();
+                    Device device = new Device(BaseDeviceType.NANOLEAF_AURORA);
                     device.setUuid(UUID.fromString(received.substring(indexUUID, received.indexOf("\r\n", indexUUID))));
                     device.setName(received.substring(indexName, received.indexOf("\r\n", indexName)));
                     device.setIp(InetAddress.getByName(url.getHost()));
