@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class AppSettings {
 
     private Settings settings;
@@ -40,7 +42,7 @@ public class AppSettings {
                 settings = mapper.readValue(file, Settings.class);
                 log.debug("loading settings -> \n{}", settings);
             } catch (MismatchedInputException e) {
-                log.error("Could not load settings.");
+                log.error("Could not load settings.", e);
             }
         } else {
             file.createNewFile();

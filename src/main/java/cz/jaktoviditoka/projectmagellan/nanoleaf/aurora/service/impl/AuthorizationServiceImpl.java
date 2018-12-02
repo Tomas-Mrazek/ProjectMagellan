@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.AuthorizationService;
+import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
 
 @Service
 public class AuthorizationServiceImpl implements AuthorizationService {
@@ -22,26 +23,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public Authorization addUser(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + NEW)
-            .build();
-        ResponseEntity<Authorization> response = restTemplate.postForEntity(uriComponents.toUri(), null,
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + NEW);
+        ResponseEntity<Authorization> response = restTemplate.postForEntity(uri, null,
                 Authorization.class);
         return response.getBody();
     }
 
     @Override
     public void deleteUser(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken())
-            .build();
-        restTemplate.delete(uriComponents.toUri());
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken());
+        restTemplate.delete(uri);
     }
 
 }

@@ -1,5 +1,9 @@
 package cz.jaktoviditoka.projectmagellan.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.net.InetAddress;
 import java.util.UUID;
 
@@ -13,7 +17,16 @@ public abstract class BaseDevice {
     @EqualsAndHashCode.Include
     UUID uuid;
     String name;
+    String displayName;
     InetAddress ip;
     int port;
+
+    @JsonIgnore
+    public String getResolvedName() {
+        if (StringUtils.isEmpty(displayName)) {
+            return name;
+        }
+        return displayName;
+    }
 
 }

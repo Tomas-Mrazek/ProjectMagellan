@@ -2,7 +2,9 @@ package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.IOException;
 import java.util.Set;
@@ -12,7 +14,9 @@ import javax.annotation.PostConstruct;
 import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.exception.NotAuthorizedExxception;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.AuthorizationService;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import cz.jaktoviditoka.projectmagellan.settings.AppSettings;
 import cz.jaktoviditoka.projectmagellan.ssdp.SSDPClient;
 import lombok.AccessLevel;
@@ -31,49 +35,73 @@ public class DeviceModel {
     AppSettings appSettings;
     SSDPClient ssdpclient;
     AuthorizationService authService;
+    StateService stateService;
 
     @Autowired
-    public DeviceModel(AppSettings appSettings, SSDPClient ssdpclient, AuthorizationService authService) {
+    public DeviceModel(AppSettings appSettings, SSDPClient ssdpclient, AuthorizationService authService,
+            StateService stateService) {
         this.appSettings = appSettings;
         this.ssdpclient = ssdpclient;
         this.authService = authService;
+        this.stateService = stateService;
     }
 
     @PostConstruct
-    private void init() {
+    public void init() {
         devices = appSettings.getDevices();
     }
 
-    public Set<Device> discover() throws IOException {
-        Set<Device> newDevices = ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA);
-        log.debug("discover - devices - \n {}", devices);
-        log.debug("discover - newDevices - \n {}", newDevices);
-        newDevices.removeAll(devices);
-        return newDevices;
+    public void discover(Set<Device> devices) throws IOException {
+        ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA, devices);
     }
 
-    public void pair(Device device) {
+    public boolean pair(Device device) throws NotAuthorizedExxception {
         if (StringUtils.isNotEmpty(device.getAuthToken())) {
             log.warn("Device is already paired.");
+            return false;
         }
-        Authorization auth = authService.addUser(device);
+        Authorization auth = new Authorization();
+        try {
+            auth = authService.addUser(device);
+        } catch (HttpStatusCodeException e) {
+            log.warn("Failed to pair device.", e);
+            if (e.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
+                throw new NotAuthorizedExxception();
+            }
+            return false;
+        }
+        if (StringUtils.isEmpty(auth.getAuthToken())) {
+            log.warn("Failed to pair device – auth token does not exist.");
+            return false;
+        }
         device.setAuthToken(auth.getAuthToken());
+
         appSettings.getDevices().add(device);
         try {
             appSettings.saveSettings();
         } catch (IOException e) {
             log.error("Failed to save paired device.", e);
         }
+
+        return true;
     }
 
-    public void unpair(Device device) {
-        authService.deleteUser(device);
+    public boolean unpair(Device device) {
+        try {
+            authService.deleteUser(device);
+        } catch (HttpStatusCodeException e) {
+            log.warn("Failed to unpair device.", e);
+            return false;
+        }
+
         appSettings.getDevices().remove(device);
         try {
             appSettings.saveSettings();
         } catch (IOException e) {
             log.error("Failed to save removed device to settings.", e);
         }
+
+        return true;
     }
 
 }

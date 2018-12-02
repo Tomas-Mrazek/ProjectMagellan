@@ -15,6 +15,12 @@
             level="debug" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
+        <Logger name="reactor" level="debug" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="io.netty" level="INFO" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
         <Logger name="cz.jaktoviditoka" level="debug"
             additivity="false">
             <AppenderRef ref="Console" />

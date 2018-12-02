@@ -29,14 +29,16 @@ public class ProjectMagellan extends Application {
     public void start(Stage stage) throws IOException {
         fxmlLoader.setLocation(getClass().getResource("/nanoleaf-aurora.fxml"));
         Parent rootNode = fxmlLoader.load();
-        stage.setScene(new Scene(rootNode));
+        Scene scene = new Scene(rootNode);
+        scene.getStylesheets().add("/style.css");
+        stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();
     }
 
     @Override
     public void stop() {
-        context.stop();
+        SpringApplication.exit(context, () -> 0);
     }
 
     public static void main(String[] args) {

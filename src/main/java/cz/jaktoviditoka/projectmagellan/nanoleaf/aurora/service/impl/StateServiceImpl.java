@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
+import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
 
 @Service
 public class StateServiceImpl implements StateService {
@@ -32,134 +33,86 @@ public class StateServiceImpl implements StateService {
 
     @Override
     public OnResponse isOn(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + ON)
-            .build();
-        ResponseEntity<OnResponse> response = restTemplate.getForEntity(uriComponents.toUri(),
-                OnResponse.class);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + ON);
+        ResponseEntity<OnResponse> response = restTemplate.getForEntity(uri, OnResponse.class);
         return response.getBody();
     }
 
     @Override
     public void setOn(Device device, OnRequest on) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + STATE)
-            .build();
-        restTemplate.put(uriComponents.toUri(), on);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + STATE);
+        restTemplate.put(uri, on);
     }
 
     @Override
     public BrightnessResponse getBrightness(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + BRIGHTNESS)
-            .build();
-        ResponseEntity<BrightnessResponse> response = restTemplate.getForEntity(uriComponents.toUri(),
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + BRIGHTNESS);
+        ResponseEntity<BrightnessResponse> response = restTemplate.getForEntity(uri,
                 BrightnessResponse.class);
         return response.getBody();
     }
 
     @Override
     public void setBrightness(Device device, BrightnessRequest brightness) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + STATE)
-            .build();
-        restTemplate.put(uriComponents.toUri(), brightness);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + STATE);
+        restTemplate.put(uri, brightness);
     }
 
     @Override
     public HueResponse getHue(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + HUE)
-            .build();
-        ResponseEntity<HueResponse> response = restTemplate.getForEntity(uriComponents.toUri(),
-                HueResponse.class);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + HUE);
+        ResponseEntity<HueResponse> response = restTemplate.getForEntity(uri, HueResponse.class);
         return response.getBody();
     }
 
     @Override
     public void setHue(Device device, HueRequest hue) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + STATE)
-            .build();
-        restTemplate.put(uriComponents.toUri(), hue);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + STATE);
+        restTemplate.put(uri, hue);
     }
 
     @Override
     public SaturationResponse getSaturation(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + SATURATION)
-            .build();
-        ResponseEntity<SaturationResponse> response = restTemplate.getForEntity(uriComponents.toUri(),
-                SaturationResponse.class);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + SATURATION);
+        ResponseEntity<SaturationResponse> response = restTemplate.getForEntity(uri, SaturationResponse.class);
         return response.getBody();
     }
 
     @Override
     public void setSaturation(Device device, SaturationRequest saturation) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + STATE)
-            .build();
-        restTemplate.put(uriComponents.toUri(), saturation);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + STATE);
+        restTemplate.put(uri, saturation);
     }
 
     @Override
     public ColorTemperatureResponse getColorTemperature(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + COLOR_TEMPERATURE)
-            .build();
-        ResponseEntity<ColorTemperatureResponse> response = restTemplate.getForEntity(uriComponents.toUri(),
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + COLOR_TEMPERATURE);
+        ResponseEntity<ColorTemperatureResponse> response = restTemplate.getForEntity(uri,
                 ColorTemperatureResponse.class);
         return response.getBody();
     }
 
     @Override
     public void setColorTemperature(Device device, ColorTemperatureRequest colorTemperature) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + STATE)
-            .build();
-        restTemplate.put(uriComponents.toUri(), colorTemperature);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + STATE);
+        restTemplate.put(uri, colorTemperature);
     }
 
     @Override
     public ColorMode getColorMode(Device device) {
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-            .scheme("http")
-            .host(device.getIp().getHostAddress())
-            .port(device.getPort())
-            .path(BASE_URL + device.getAuthToken() + COLOR_MODE)
-            .build();
-        ResponseEntity<ColorMode> response = restTemplate.getForEntity(uriComponents.toUri(),
-                ColorMode.class);
+        URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
+                BASE_URL + device.getAuthToken() + COLOR_MODE);
+        ResponseEntity<ColorMode> response = restTemplate.getForEntity(uri, ColorMode.class);
         return response.getBody();
     }
 
