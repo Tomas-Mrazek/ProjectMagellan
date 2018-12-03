@@ -11,7 +11,9 @@ import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class StateServiceImpl implements StateService {
 
@@ -36,6 +38,7 @@ public class StateServiceImpl implements StateService {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + ON);
         ResponseEntity<OnResponse> response = restTemplate.getForEntity(uri, OnResponse.class);
+        log.debug("Response isOn: {}", response);
         return response.getBody();
     }
 

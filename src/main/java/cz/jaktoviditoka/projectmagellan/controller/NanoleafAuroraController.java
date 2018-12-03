@@ -1,5 +1,7 @@
 package cz.jaktoviditoka.projectmagellan.controller;
 
+import com.jfoenix.controls.JFXListView;
+
 import org.apache.logging.log4j.core.config.Order;
 import org.controlsfx.control.ToggleSwitch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,9 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.IntStream;
 
 import javax.annotation.PreDestroy;
 
@@ -19,23 +23,22 @@ import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.exception.NotAuthorizedE
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,62 +60,63 @@ public class NanoleafAuroraController {
     StateService stateService;
 
     @FXML
-    VBox pairedDevices;
+    JFXListView<PairedDeviceView> pairedDevices;
 
     @FXML
-    AnchorPane actionWindowPane;
+    ScrollPane actionWindowScroll;
 
-    @FXML
-    VBox actionWindow;
+    FlowPane actionWindowControl;
+    FlowPane actionWindowDiscover;
 
-    ScrollPane actionWindowDiscover;
-
-    @FXML
     ToggleSwitch power;
-
-    @FXML
     Slider brightness;
-
-    @FXML
     TabPane colorModeTab;
-
-    @FXML
     Tab whiteTab;
-
-    @FXML
     Tab colorTab;
-
-    @FXML
     Tab effectTab;
-
-    @FXML
     Slider colorTemperature;
 
-    static final String IMAGE_NANOLEAF_AURORA = "image/nanoleaf-aurora-transparent.png";
+    static final String IMAGE_NANOLEAF_AURORA = "image/nanoleaf-aurora-transparent-2.png";
 
     public void initialize() {
-        ChangeListener<Boolean> actionWindowDiscoverListener = (obs, wasShowing, isNowShowing) -> {
-            if (!isNowShowing) {
-                actionWindowDiscover.setContent(new Text("No devices found."));
-            }
-        };
-        actionWindowDiscover = new ScrollPane();
-        actionWindowDiscover.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        actionWindowDiscover.setContent(new Text("Searching..."));
-        actionWindowDiscover.setFitToWidth(true);
-        actionWindowDiscover.setFitToHeight(true);
-        actionWindowDiscover.setVisible(false);
-        actionWindowDiscover.visibleProperty().addListener(actionWindowDiscoverListener);
-        actionWindowPane.getChildren().add(actionWindowDiscover);
+        power = new ToggleSwitch();
+        brightness = new Slider();
+        colorModeTab = new TabPane();
+        whiteTab = new Tab();
+        colorTab = new Tab();
+        effectTab = new Tab();
+        colorTemperature = new Slider();
+
+        actionWindowScroll.setFitToHeight(true);
+        actionWindowScroll.setFitToWidth(true);
+
+        actionWindowControl = new FlowPane();
+        actionWindowControl.setOrientation(Orientation.VERTICAL);
+        actionWindowControl.getStyleClass().add("actionWindow");
+
+        actionWindowDiscover = new FlowPane();
+        actionWindowDiscover.setOrientation(Orientation.HORIZONTAL);
+        actionWindowDiscover.getStyleClass().add("actionWindow");
 
         devices = FXCollections.observableSet(new HashSet<>());
         SetChangeListener<Device> devicesListener = change -> {
             if (change.wasAdded()) {
-                createPiredDeviceView(change.getElementAdded());
+                IntStream.range(0, 1)
+                    .forEach(index -> {
+                        createPiredDeviceView(change.getElementAdded());
+                    });
             }
         };
         devices.addListener(devicesListener);
         devices.addAll(deviceModel.getDevices());
+
+        Optional<Device> activeDeviceOpt = devices.stream().findFirst();
+        if (activeDeviceOpt.isPresent()) {
+            activeDevice = activeDeviceOpt.get();
+            actionWindowScroll.setContent(actionWindowControl);
+        } else {
+            actionWindowScroll.setContent(actionWindowDiscover);
+        }
     }
 
     @PreDestroy
@@ -125,13 +129,12 @@ public class NanoleafAuroraController {
         ImageView image = new ImageView(IMAGE_NANOLEAF_AURORA);
         image.setFitWidth(100);
         image.setPreserveRatio(true);
-        Text name = new Text(device.getResolvedName());
-        name.setWrappingWidth(200);
-        Button unpair = new Button("");
+        Label name = new Label(device.getResolvedName());
+        Button unpair = new Button("X");
         unpair.getStyleClass().add("close-icon");
         unpair.setOnMouseClicked(event -> {
             unpair(device);
-            pairedDevices.getChildren().remove(view);
+            pairedDevices.getItems().remove(view);
         });
 
         view.setImage(image);
@@ -140,16 +143,17 @@ public class NanoleafAuroraController {
         view.addComponents();
 
         view.setOnMouseClicked(event -> {
+            actionWindowScroll.setContent(actionWindowControl);
             activeDevice = device;
-            actionWindowDiscover.setVisible(false);
-            actionWindow.setVisible(true);
-            refreshState(device);
+            refreshState();
         });
 
-        pairedDevices.getChildren().add(view);
+        pairedDevices.getItems().add(view);
     }
 
-    private void refreshState(Device device) {
+    //@Scheduled(initialDelay = 10000, fixedRate = 5000)
+    public void refreshState() {
+        Device device = activeDevice;
         OnResponse onResponse = stateService.isOn(device);
         power.setSelected(onResponse.isValue());
 
@@ -212,64 +216,67 @@ public class NanoleafAuroraController {
         //
     }
 
+    private DiscoveredDeviceView createDiscoveredDeviceView(Device device) {
+        DiscoveredDeviceView view = new DiscoveredDeviceView();
+        view.getStyleClass().add("actionTile");
+        view.prefWidth(600);
+        view.setSpacing(20);
+        view.setAlignment(Pos.CENTER);
+
+        ImageView image = new ImageView(IMAGE_NANOLEAF_AURORA);
+        image.setFitWidth(200);
+        image.setPreserveRatio(true);
+        Text name = new Text(device.getResolvedName());
+        name.getStyleClass().add("actionTileText");
+        Button pairButton = new Button("PAIR");
+        Text status = new Text();
+        pairButton.setOnMouseClicked(event -> {
+            status.setText("PAIRING");
+            status.setStyle("-fx-fill: yellow; -fx-font-size: 16px;");
+            try {
+                if (pair(device)) {
+                    status.setText("PAIRED");
+                    status.setStyle("-fx-fill: green; -fx-font-size: 16px;");
+                    pairButton.setDisable(true);
+                }
+            } catch (NotAuthorizedExxception e) {
+                status.setText("DEVICE NOT IN PAIRING MODE");
+                status.setStyle("-fx-fill: yellow; -fx-font-size: 16px;");
+            }
+        });
+        view.setImage(image);
+        view.setName(name);
+        view.setPairButton(pairButton);
+        view.setStatus(status);
+        view.addComponents();
+
+        if (devices.contains(device)) {
+            status.setText("PAIRED");
+            status.setStyle("-fx-fill: green; -fx-font-size: 16px;");
+            pairButton.setDisable(true);
+        } else {
+            status.setText("NOT PAIRED");
+            status.setStyle("-fx-fill: red; -fx-font-size: 16px;");
+        }
+        return view;
+    }
+
     @FXML
     void discover() {
-        actionWindowDiscover.setContent(new Text("Searching..."));
-        FlowPane flowPane = new FlowPane();
-
+        actionWindowDiscover.getChildren().clear();
+        actionWindowDiscover.setOrientation(Orientation.HORIZONTAL);
+        actionWindowScroll.setContent(actionWindowDiscover);
+        
         ObservableSet<Device> newDevices = FXCollections.observableSet(new HashSet<>());
         SetChangeListener<Device> newDevicesListener = change -> {
             if (change.wasAdded()) {
                 log.debug("Added device to discover list.");
-                Device added = change.getElementAdded();
 
-                DiscoveredDeviceView view = new DiscoveredDeviceView();
-                ImageView image = new ImageView(IMAGE_NANOLEAF_AURORA);
-                image.setFitWidth(100);
-                image.setPreserveRatio(true);
-                Text name = new Text(added.getResolvedName());
-                Button pairButton = new Button("PAIR");
-                Text status = new Text();
-                pairButton.setOnMouseClicked(event -> {
-                    status.setText("PAIRING");
-                    status.setStyle("-fx-fill: yellow; -fx-font-size: 16px;");
-                    try {
-                        if (pair(added)) {
-                            status.setText("PAIRED");
-                            status.setStyle("-fx-fill: green; -fx-font-size: 16px;");
-                            pairButton.setDisable(true);
-                        }
-                    } catch (NotAuthorizedExxception e) {
-                        status.setText("DEVICE NOT IN PAIRING MODE");
-                        status.setStyle("-fx-fill: yellow; -fx-font-size: 16px;");
-                    }
+                DiscoveredDeviceView view = createDiscoveredDeviceView(change.getElementAdded());
+                Platform.runLater(() -> {
+                    actionWindowDiscover.getChildren().add(view);
                 });
-                view.setImage(image);
-                view.setName(name);
-                view.setPairButton(pairButton);
-                view.setStatus(status);
-                view.addComponents();
-
-                if (devices.contains(change.getElementAdded())) {
-                    status.setText("PAIRED");
-                    status.setStyle("-fx-fill: green; -fx-font-size: 16px;");
-                    pairButton.setDisable(true);
-                } else {
-                    status.setText("NOT PAIRED");
-                    status.setStyle("-fx-fill: red; -fx-font-size: 16px;");
-                }
-
-                flowPane.getChildren().add(view);
-
-                if (!change.getSet().isEmpty()) {
-                    Platform.runLater(() -> {
-                        actionWindowDiscover.setContent(flowPane);
-                    });
-                } else {
-                    Platform.runLater(() -> {
-                        actionWindowDiscover.setContent(new Text("No devices found."));
-                    });
-                }
+                    
             }
         };
         newDevices.addListener(newDevicesListener);
@@ -278,8 +285,6 @@ public class NanoleafAuroraController {
 
             @Override
             protected Void call() throws Exception {
-                actionWindow.setVisible(false);
-                actionWindowDiscover.setVisible(true);
                 deviceModel.discover(newDevices);
                 log.debug("Discovered devices: {}", newDevices);
                 return null;

@@ -13,6 +13,7 @@
         <spring-boot-starter.version>2.1.0.RELEASE</spring-boot-starter.version>
         <javafx-fxml.version>11.0.1</javafx-fxml.version>
         <controlsfx.version>9.0.0</controlsfx.version>
+        <jfoenix.version>9.0.8</jfoenix.version>
         <lombok.version>1.18.4</lombok.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
 
@@ -39,13 +40,8 @@
             <version>${spring-boot-starter.version}</version>
         </dependency>
 
-<!-- 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-            <version>${spring-boot-starter.version}</version>
-        </dependency>
- -->
+        <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-webflux</artifactId> 
+            <version>${spring-boot-starter.version}</version> </dependency> -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -63,6 +59,12 @@
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>${controlsfx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>${jfoenix.version}</version>
         </dependency>
 
         <dependency>
