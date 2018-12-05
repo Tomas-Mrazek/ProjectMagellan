@@ -6,9 +6,6 @@ import cz.jaktoviditoka.projectmagellan.gui.view.BrightnessTile;
 import cz.jaktoviditoka.projectmagellan.gui.view.ColorTemperatureTile;
 import cz.jaktoviditoka.projectmagellan.gui.view.PowerTile;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.BrightnessResponse;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.ColorTemperatureResponse;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.OnResponse;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -55,19 +52,33 @@ public class DeviceController {
             deviceModel.setColorTemperature(device, colorTempSlider.getValue());
         });
     }
-    
+
     public void refresh() {
-        OnResponse onResponse = deviceModel.isOn(device);
+
         JFXToggleButton onButton = on.getPower();
-        onButton.setSelected(onResponse.isValue());
+        deviceModel.isOn(device)
+            .doOnNext(value -> {
+                onButton.setSelected(value.isValue());
+            })
+            .log()
+            .subscribe();
 
-        BrightnessResponse brightnessResponse = deviceModel.getBrightness(device);
         JFXSlider brightnessSlider = brightness.getBrightness();
-        brightnessSlider.setValue(brightnessResponse.getValue());
+        deviceModel.getBrightness(device)
+            .doOnNext(value -> {
+                brightnessSlider.setValue(value.getValue());
+            })
+            .log()
+            .subscribe();
 
-        ColorTemperatureResponse colorTemperatureResponse = deviceModel.getColorTemperature(device);
         JFXSlider colorTempSlider = colorTemperature.getColorTemperature();
-        colorTempSlider.setValue(colorTemperatureResponse.getValue());
+        deviceModel.getColorTemperature(device)
+            .doOnNext(value -> {
+                colorTempSlider.setValue(value.getValue());
+            })
+            .log()
+            .subscribe();
+
     }
 
 }

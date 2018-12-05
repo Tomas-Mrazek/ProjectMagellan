@@ -6,11 +6,11 @@ import reactor.core.publisher.Mono;
 
 public interface StateService {
 
-    OnResponse isOn(Device device);
+    Mono<OnResponse> isOn(Device device);
 
     Mono<Void> setOn(Device device, OnRequest on);
 
-    BrightnessResponse getBrightness(Device device);
+    Mono<BrightnessResponse> getBrightness(Device device);
 
     Mono<Void> setBrightness(Device device, BrightnessRequest brightness);
 
@@ -22,7 +22,7 @@ public interface StateService {
 
     void setSaturation(Device device, SaturationRequest saturation);
 
-    ColorTemperatureResponse getColorTemperature(Device device);
+    Mono<ColorTemperatureResponse> getColorTemperature(Device device);
 
     Mono<Void> setColorTemperature(Device device, ColorTemperatureRequest colorTemperature);
 

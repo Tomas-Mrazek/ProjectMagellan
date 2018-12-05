@@ -106,7 +106,7 @@ public class DeviceModel {
     }
 
 
-    public OnResponse isOn(Device device) {
+    public Mono<OnResponse> isOn(Device device) {
         return stateService.isOn(device);
     }
 
@@ -117,7 +117,7 @@ public class DeviceModel {
         response.subscribe();
     }
 
-    public BrightnessResponse getBrightness(Device device) {
+    public Mono<BrightnessResponse> getBrightness(Device device) {
         return stateService.getBrightness(device);
     }
 
@@ -129,7 +129,7 @@ public class DeviceModel {
         response.subscribe();
     }
 
-    public ColorTemperatureResponse getColorTemperature(Device device) {
+    public Mono<ColorTemperatureResponse> getColorTemperature(Device device) {
         return stateService.getColorTemperature(device);
     }
 

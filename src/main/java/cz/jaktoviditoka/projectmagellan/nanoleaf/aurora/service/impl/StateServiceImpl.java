@@ -40,11 +40,14 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public OnResponse isOn(Device device) {
+    public Mono<OnResponse> isOn(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + ON);
-        ResponseEntity<OnResponse> response = restTemplate.getForEntity(uri, OnResponse.class);
-        return response.getBody();
+        return client
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(OnResponse.class);
     }
 
     @Override
@@ -60,12 +63,14 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public BrightnessResponse getBrightness(Device device) {
+    public Mono<BrightnessResponse> getBrightness(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + BRIGHTNESS);
-        ResponseEntity<BrightnessResponse> response = restTemplate.getForEntity(uri,
-                BrightnessResponse.class);
-        return response.getBody();
+        return client
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(BrightnessResponse.class);
     }
 
     @Override
@@ -111,12 +116,14 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public ColorTemperatureResponse getColorTemperature(Device device) {
+    public Mono<ColorTemperatureResponse> getColorTemperature(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + COLOR_TEMPERATURE);
-        ResponseEntity<ColorTemperatureResponse> response = restTemplate.getForEntity(uri,
-                ColorTemperatureResponse.class);
-        return response.getBody();
+        return client
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(ColorTemperatureResponse.class);
     }
 
     @Override

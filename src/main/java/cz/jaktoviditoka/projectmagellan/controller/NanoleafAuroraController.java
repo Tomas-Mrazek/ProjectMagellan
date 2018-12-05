@@ -93,14 +93,6 @@ public class NanoleafAuroraController {
         };
         devices.addListener(devicesListener);
         devices.addAll(deviceModel.getDevices());
-
-        Optional<Device> activeDeviceOpt = devices.stream().findFirst();
-        if (activeDeviceOpt.isPresent()) {
-            activeDevice = activeDeviceOpt.get();
-            actionWindowScroll.setContent(actionWindowControl);
-        } else {
-            actionWindowScroll.setContent(actionWindowDiscover);
-        }
     }
 
     @PreDestroy
