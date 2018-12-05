@@ -3,12 +3,18 @@
 }
 
 @font-face {
+    src: url('/fonts/Roboto/Roboto-Black.ttf');
+}
+
+@font-face {
     src: url('/fonts/Open_Sans/OpenSans-Regular.ttf');
 }
 
 .root {
     -fx-font-family: 'Roboto';
 }
+
+
 
 .close-icon {
 	-fx-background-radius: 30.0;
@@ -23,17 +29,64 @@
 
 .actionWindow {
 	-fx-background-color: #333333;
-	-fx-padding: 20;
-	-fx-vgap: 20;
-	-fx-hgap: 20;
+	-fx-padding: 20.0;
+	-fx-vgap: 20.0;
+	-fx-hgap: 20.0;
 }
 
 .actionTile {
-	-fx-background-radius: 5;	
+	-fx-background-radius: 5.0;	
     -fx-background-color: #1a1a1a;
-    -fx-padding: 20;
+    -fx-padding: 20.0;
 }
 
-.actionTileText {
-    -fx-fill: white;	
+.actionTileName {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-fill: #ffff00;
+}
+
+.actionTileDescription {
+    -fx-font-size: 16;
+    -fx-font-weight: normal;
+    -fx-fill: #ffffff;
+}
+
+.discoverTileText {
+    -fx-fill: white;
+}
+
+.jfx-toggle-button {
+	-jfx-toggle-color: #ffff00;
+	-jfx-toggle-line-color: #ffffa0;
+}
+
+.slider .axis {
+    -fx-padding: 20;
+    -fx-tick-label-font-size: 16;
+    -fx-tick-label-font-weight: normal;
+    -fx-tick-label-fill: #ffffff;
+}
+
+.jfx-slider > .track {
+	-fx-background-color: #ffffff;
+}
+
+.jfx-slider > .thumb {
+	-fx-background-color: #ffff00;
+}
+
+.jfx-slider > .colored-track {
+	-fx-background-color: #ffffa0;
+}
+
+.jfx-slider > .animated-thumb {
+	-fx-background-color: #ffff00;
+}
+
+.jfx-slider .slider-value {
+    -fx-font-family: 'Roboto Black';
+	-fx-font-size: 16;
+	-fx-fill: black;
+	-fx-stroke-width: 0;
 }

@@ -1,17 +1,20 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
-
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 @Slf4j
 @Service
@@ -29,6 +32,9 @@ public class StateServiceImpl implements StateService {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    WebClient client;
+
     public StateServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -38,15 +44,19 @@ public class StateServiceImpl implements StateService {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + ON);
         ResponseEntity<OnResponse> response = restTemplate.getForEntity(uri, OnResponse.class);
-        log.debug("Response isOn: {}", response);
         return response.getBody();
     }
 
     @Override
-    public void setOn(Device device, OnRequest on) {
+    public Mono<Void> setOn(Device device, OnRequest on) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
-        restTemplate.put(uri, on);
+        return client
+            .method(HttpMethod.PUT)
+            .uri(uri)
+            .body(BodyInserters.fromObject(on))
+            .retrieve()
+            .bodyToMono(Void.class);
     }
 
     @Override
@@ -59,10 +69,15 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public void setBrightness(Device device, BrightnessRequest brightness) {
+    public Mono<Void> setBrightness(Device device, BrightnessRequest brightness) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
-        restTemplate.put(uri, brightness);
+        return client
+            .method(HttpMethod.PUT)
+            .uri(uri)
+            .body(BodyInserters.fromObject(brightness))
+            .retrieve()
+            .bodyToMono(Void.class);
     }
 
     @Override
@@ -105,10 +120,15 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public void setColorTemperature(Device device, ColorTemperatureRequest colorTemperature) {
+    public Mono<Void> setColorTemperature(Device device, ColorTemperatureRequest colorTemperature) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
-        restTemplate.put(uri, colorTemperature);
+        return client
+            .method(HttpMethod.PUT)
+            .uri(uri)
+            .body(BodyInserters.fromObject(colorTemperature))
+            .retrieve()
+            .bodyToMono(Void.class);
     }
 
     @Override

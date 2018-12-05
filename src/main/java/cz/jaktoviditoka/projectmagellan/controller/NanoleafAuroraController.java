@@ -1,24 +1,9 @@
 package cz.jaktoviditoka.projectmagellan.controller;
 
 import com.jfoenix.controls.JFXListView;
-
-import org.apache.logging.log4j.core.config.Order;
-import org.controlsfx.control.ToggleSwitch;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.stream.IntStream;
-
-import javax.annotation.PreDestroy;
-
 import cz.jaktoviditoka.projectmagellan.gui.view.DiscoveredDeviceView;
 import cz.jaktoviditoka.projectmagellan.gui.view.PairedDeviceView;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.exception.NotAuthorizedExxception;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
@@ -30,17 +15,22 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.control.Slider;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.core.config.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+
+import javax.annotation.PreDestroy;
 
 @Slf4j
 @Order(Ordered.LOWEST_PRECEDENCE)
@@ -59,17 +49,17 @@ public class NanoleafAuroraController {
     @Autowired
     StateService stateService;
 
+    Set<DeviceController> deviceControllers;
+
     @FXML
     JFXListView<PairedDeviceView> pairedDevices;
 
     @FXML
     ScrollPane actionWindowScroll;
 
-    FlowPane actionWindowControl;
     FlowPane actionWindowDiscover;
+    FlowPane actionWindowControl;
 
-    ToggleSwitch power;
-    Slider brightness;
     TabPane colorModeTab;
     Tab whiteTab;
     Tab colorTab;
@@ -79,8 +69,8 @@ public class NanoleafAuroraController {
     static final String IMAGE_NANOLEAF_AURORA = "image/nanoleaf-aurora-transparent-2.png";
 
     public void initialize() {
-        power = new ToggleSwitch();
-        brightness = new Slider();
+        deviceControllers = new HashSet<>();
+
         colorModeTab = new TabPane();
         whiteTab = new Tab();
         colorTab = new Tab();
@@ -90,10 +80,6 @@ public class NanoleafAuroraController {
         actionWindowScroll.setFitToHeight(true);
         actionWindowScroll.setFitToWidth(true);
 
-        actionWindowControl = new FlowPane();
-        actionWindowControl.setOrientation(Orientation.VERTICAL);
-        actionWindowControl.getStyleClass().add("actionWindow");
-
         actionWindowDiscover = new FlowPane();
         actionWindowDiscover.setOrientation(Orientation.HORIZONTAL);
         actionWindowDiscover.getStyleClass().add("actionWindow");
@@ -101,10 +87,8 @@ public class NanoleafAuroraController {
         devices = FXCollections.observableSet(new HashSet<>());
         SetChangeListener<Device> devicesListener = change -> {
             if (change.wasAdded()) {
-                IntStream.range(0, 1)
-                    .forEach(index -> {
-                        createPiredDeviceView(change.getElementAdded());
-                    });
+                DeviceController deviceController = createDeviceController(change.getElementAdded());
+                createPiredDeviceView(deviceController);
             }
         };
         devices.addListener(devicesListener);
@@ -124,7 +108,16 @@ public class NanoleafAuroraController {
         executor.shutdown();
     }
 
-    private void createPiredDeviceView(Device device) {
+    private DeviceController createDeviceController(Device device) {
+        DeviceController deviceController = new DeviceController(deviceModel, device);
+        deviceController.init();
+        deviceController.refresh();
+        return deviceController;
+    }
+
+    private void createPiredDeviceView(DeviceController deviceController) {
+        Device device = deviceController.getDevice();
+
         PairedDeviceView view = new PairedDeviceView();
         ImageView image = new ImageView(IMAGE_NANOLEAF_AURORA);
         image.setFitWidth(100);
@@ -142,8 +135,10 @@ public class NanoleafAuroraController {
         view.setUnpairButton(unpair);
         view.addComponents();
 
+        FlowPane window = createActiveWindowControl(deviceController);
+
         view.setOnMouseClicked(event -> {
-            actionWindowScroll.setContent(actionWindowControl);
+            actionWindowScroll.setContent(window);
             activeDevice = device;
             refreshState();
         });
@@ -151,69 +146,26 @@ public class NanoleafAuroraController {
         pairedDevices.getItems().add(view);
     }
 
+    private FlowPane createActiveWindowControl(DeviceController deviceController) {
+        FlowPane window = new FlowPane();
+        window.setOrientation(Orientation.VERTICAL);
+        window.getStyleClass().add("actionWindow");
+
+        window.getChildren().add(deviceController.getOn());
+        window.getChildren().add(deviceController.getBrightness());
+        window.getChildren().add(deviceController.getColorTemperature());
+
+        return window;
+    }
+
     //@Scheduled(initialDelay = 10000, fixedRate = 5000)
     public void refreshState() {
-        Device device = activeDevice;
-        OnResponse onResponse = stateService.isOn(device);
-        power.setSelected(onResponse.isValue());
-
-        BrightnessResponse brightnessResponse = stateService.getBrightness(device);
-        brightness.setMin(brightnessResponse.getMin());
-        brightness.setMax(brightnessResponse.getMax());
-        brightness.setValue(brightnessResponse.getValue());
-
-        ColorTemperatureResponse colorTemperatureResponse = stateService.getColorTemperature(device);
-        colorTemperature.setMin(colorTemperatureResponse.getMin());
-        colorTemperature.setMax(colorTemperatureResponse.getMax());
-        colorTemperature.setValue(colorTemperatureResponse.getValue());
-
-        ColorMode colorMode = stateService.getColorMode(device);
-        SelectionModel<Tab> selectionModel = colorModeTab.getSelectionModel();
-        switch (colorMode) {
-            case COLOR_TEMPERATURE:
-                selectionModel.select(whiteTab);
-                break;
-            case EFFECT:
-                selectionModel.select(effectTab);
-                break;
-            case HUE_SATURATION:
-                selectionModel.select(colorTab);
-                break;
-            default:
-                selectionModel.select(whiteTab);
-                break;
+        Optional<DeviceController> deviceControllerOpt = deviceControllers.stream()
+            .filter(e -> e.getDevice().equals(activeDevice))
+            .findFirst();
+        if (deviceControllerOpt.isPresent()) {
+            deviceControllerOpt.get().refresh();
         }
-    }
-
-    @FXML
-    private void changePower() {
-        boolean selected = power.isSelected();
-        On on = new On(selected);
-        OnRequest onRequest = new OnRequest(on);
-        stateService.setOn(activeDevice, onRequest);
-    }
-
-    @FXML
-    private void changeBrightness() {
-        Double value = brightness.getValue();
-        BrightnessValue brightnessValue = new BrightnessValue();
-        brightnessValue.setValue(value.intValue());
-        BrightnessRequest brightnessRequest = new BrightnessRequest(brightnessValue);
-        stateService.setBrightness(activeDevice, brightnessRequest);
-    }
-
-    @FXML
-    private void changeColorTemperature() {
-        Double value = colorTemperature.getValue();
-        ColorTemperatureValue colorTemperatureValue = new ColorTemperatureValue();
-        colorTemperatureValue.setValue(value.intValue());
-        ColorTemperatureRequest colorTemperatureRequest = new ColorTemperatureRequest(colorTemperatureValue);
-        stateService.setColorTemperature(activeDevice, colorTemperatureRequest);
-    }
-
-    @FXML
-    private void getEffect() {
-        //
     }
 
     private DiscoveredDeviceView createDiscoveredDeviceView(Device device) {
@@ -227,7 +179,7 @@ public class NanoleafAuroraController {
         image.setFitWidth(200);
         image.setPreserveRatio(true);
         Text name = new Text(device.getResolvedName());
-        name.getStyleClass().add("actionTileText");
+        name.getStyleClass().add("discoverTileText");
         Button pairButton = new Button("PAIR");
         Text status = new Text();
         pairButton.setOnMouseClicked(event -> {
@@ -266,7 +218,7 @@ public class NanoleafAuroraController {
         actionWindowDiscover.getChildren().clear();
         actionWindowDiscover.setOrientation(Orientation.HORIZONTAL);
         actionWindowScroll.setContent(actionWindowDiscover);
-        
+
         ObservableSet<Device> newDevices = FXCollections.observableSet(new HashSet<>());
         SetChangeListener<Device> newDevicesListener = change -> {
             if (change.wasAdded()) {
@@ -276,7 +228,7 @@ public class NanoleafAuroraController {
                 Platform.runLater(() -> {
                     actionWindowDiscover.getChildren().add(view);
                 });
-                    
+
             }
         };
         newDevices.addListener(newDevicesListener);
@@ -309,61 +261,6 @@ public class NanoleafAuroraController {
             return true;
         }
         return false;
-    }
-
-    @FXML
-    void getBrightness() {
-        devices.forEach(d -> {
-            log.debug("getBrightness -> \n{}", stateService.getBrightness(d));
-        });
-    }
-
-    @FXML
-    void setBrightness() {
-        throw new UnsupportedOperationException();
-    }
-
-    @FXML
-    void getHue() {
-        devices.forEach(d -> {
-            log.debug("getHue -> \n{}", stateService.getHue(d));
-        });
-    }
-
-    @FXML
-    void setHue() {
-        throw new UnsupportedOperationException();
-    }
-
-    @FXML
-    void getSaturation() {
-        devices.forEach(d -> {
-            log.debug("getSaturation -> \n{}", stateService.getSaturation(d));
-        });
-    }
-
-    @FXML
-    void setSaturation() {
-        throw new UnsupportedOperationException();
-    }
-
-    @FXML
-    void getColorTemperature() {
-        devices.forEach(d -> {
-            log.debug("getColorTemperature -> \n{}", stateService.getColorTemperature(d));
-        });
-    }
-
-    @FXML
-    void setColorTemperature() {
-        throw new UnsupportedOperationException();
-    }
-
-    @FXML
-    void getColorMode() {
-        devices.forEach(d -> {
-            log.debug("getColorMode -> \n{}", stateService.getColorMode(d));
-        });
     }
 
 }

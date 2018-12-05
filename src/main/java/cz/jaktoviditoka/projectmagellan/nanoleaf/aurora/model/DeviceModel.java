@@ -1,19 +1,9 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import java.io.IOException;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-
 import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.exception.NotAuthorizedExxception;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.AuthorizationService;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
@@ -23,6 +13,17 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
+import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -102,6 +103,42 @@ public class DeviceModel {
         }
 
         return true;
+    }
+
+
+    public OnResponse isOn(Device device) {
+        return stateService.isOn(device);
+    }
+
+    public void setOn(Device device, boolean power) {
+        On on = new On(power);
+        OnRequest onRequest = new OnRequest(on);
+        Mono<Void> response = stateService.setOn(device, onRequest);
+        response.subscribe();
+    }
+
+    public BrightnessResponse getBrightness(Device device) {
+        return stateService.getBrightness(device);
+    }
+
+    public void setBrightness(Device device, Number brightness) {
+        BrightnessValue brightnessValue = new BrightnessValue();
+        brightnessValue.setValue(brightness.intValue());
+        BrightnessRequest brightnessRequest = new BrightnessRequest(brightnessValue);
+        Mono<Void> response = stateService.setBrightness(device, brightnessRequest);
+        response.subscribe();
+    }
+
+    public ColorTemperatureResponse getColorTemperature(Device device) {
+        return stateService.getColorTemperature(device);
+    }
+
+    public void setColorTemperature(Device device, Number colorTemperature) {
+        ColorTemperatureValue colorTemperatureValue = new ColorTemperatureValue();
+        colorTemperatureValue.setValue(colorTemperature.intValue());
+        ColorTemperatureRequest colorTemperatureRequest = new ColorTemperatureRequest(colorTemperatureValue);
+        Mono<Void> response = stateService.setColorTemperature(device, colorTemperatureRequest);
+        response.subscribe();
     }
 
 }

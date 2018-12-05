@@ -1,12 +1,12 @@
 package cz.jaktoviditoka.projectmagellan.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +23,11 @@ public class AppConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
+    }
+
+    @Bean
+    public WebClient client() {
+        return WebClient.create();
     }
 
     @Bean
