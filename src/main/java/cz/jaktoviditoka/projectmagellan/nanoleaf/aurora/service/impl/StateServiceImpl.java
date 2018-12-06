@@ -7,7 +7,6 @@ import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -47,7 +46,8 @@ public class StateServiceImpl implements StateService {
             .method(HttpMethod.GET)
             .uri(uri)
             .retrieve()
-            .bodyToMono(OnResponse.class);
+            .bodyToMono(OnResponse.class)
+            .doOnNext(val -> log.debug("Response: {}", val));
     }
 
     @Override
@@ -70,7 +70,8 @@ public class StateServiceImpl implements StateService {
             .method(HttpMethod.GET)
             .uri(uri)
             .retrieve()
-            .bodyToMono(BrightnessResponse.class);
+            .bodyToMono(BrightnessResponse.class)
+            .doOnNext(val -> log.debug("Response: {}", val));
     }
 
     @Override
@@ -86,33 +87,51 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public HueResponse getHue(Device device) {
+    public Mono<HueResponse> getHue(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + HUE);
-        ResponseEntity<HueResponse> response = restTemplate.getForEntity(uri, HueResponse.class);
-        return response.getBody();
+        return client
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(HueResponse.class)
+            .doOnNext(val -> log.debug("Response: {}", val));
     }
 
     @Override
-    public void setHue(Device device, HueRequest hue) {
+    public Mono<Void> setHue(Device device, HueRequest hue) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
-        restTemplate.put(uri, hue);
+        return client
+            .method(HttpMethod.PUT)
+            .uri(uri)
+            .body(BodyInserters.fromObject(hue))
+            .retrieve()
+            .bodyToMono(Void.class);
     }
 
     @Override
-    public SaturationResponse getSaturation(Device device) {
+    public Mono<SaturationResponse> getSaturation(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + SATURATION);
-        ResponseEntity<SaturationResponse> response = restTemplate.getForEntity(uri, SaturationResponse.class);
-        return response.getBody();
+        return client
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(SaturationResponse.class)
+            .doOnNext(val -> log.debug("Response: {}", val));
     }
 
     @Override
-    public void setSaturation(Device device, SaturationRequest saturation) {
+    public Mono<Void> setSaturation(Device device, SaturationRequest saturation) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
-        restTemplate.put(uri, saturation);
+        return client
+            .method(HttpMethod.PUT)
+            .uri(uri)
+            .body(BodyInserters.fromObject(saturation))
+            .retrieve()
+            .bodyToMono(Void.class);
     }
 
     @Override
@@ -123,7 +142,8 @@ public class StateServiceImpl implements StateService {
             .method(HttpMethod.GET)
             .uri(uri)
             .retrieve()
-            .bodyToMono(ColorTemperatureResponse.class);
+            .bodyToMono(ColorTemperatureResponse.class)
+            .doOnNext(val -> log.debug("Response: {}", val));
     }
 
     @Override
@@ -139,11 +159,15 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public ColorMode getColorMode(Device device) {
+    public Mono<ColorMode> getColorMode(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + COLOR_MODE);
-        ResponseEntity<ColorMode> response = restTemplate.getForEntity(uri, ColorMode.class);
-        return response.getBody();
+        return client
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(ColorMode.class)
+            .doOnNext(val -> log.debug("Response: {}", val));
     }
 
 }

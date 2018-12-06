@@ -14,18 +14,18 @@ public interface StateService {
 
     Mono<Void> setBrightness(Device device, BrightnessRequest brightness);
 
-    HueResponse getHue(Device device);
+    Mono<HueResponse> getHue(Device device);
 
-    void setHue(Device device, HueRequest hue);
+    Mono<Void> setHue(Device device, HueRequest hue);
 
-    SaturationResponse getSaturation(Device device);
+    Mono<SaturationResponse> getSaturation(Device device);
 
-    void setSaturation(Device device, SaturationRequest saturation);
+    Mono<Void> setSaturation(Device device, SaturationRequest saturation);
 
     Mono<ColorTemperatureResponse> getColorTemperature(Device device);
 
     Mono<Void> setColorTemperature(Device device, ColorTemperatureRequest colorTemperature);
 
-    ColorMode getColorMode(Device device);
+    Mono<ColorMode> getColorMode(Device device);
 
 }

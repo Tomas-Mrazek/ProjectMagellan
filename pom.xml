@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cz.jaktoviditoka</groupId>
@@ -10,7 +9,7 @@
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot-starter.version>2.1.0.RELEASE</spring-boot-starter.version>
+        <spring-boot-starter.version>2.1.1.RELEASE</spring-boot-starter.version>
         <javafx-fxml.version>11.0.1</javafx-fxml.version>
         <controlsfx.version>9.0.0</controlsfx.version>
         <jfoenix.version>9.0.8</jfoenix.version>

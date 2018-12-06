@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.util.Set;
@@ -39,8 +40,8 @@ public class DeviceModel {
     StateService stateService;
 
     @Autowired
-    public DeviceModel(AppSettings appSettings, SSDPClient ssdpclient, AuthorizationService authService,
-            StateService stateService) {
+    public DeviceModel(AppSettings appSettings, SSDPClient ssdpclient,
+            AuthorizationService authService, StateService stateService) {
         this.appSettings = appSettings;
         this.ssdpclient = ssdpclient;
         this.authService = authService;
@@ -105,40 +106,68 @@ public class DeviceModel {
         return true;
     }
 
-
     public Mono<OnResponse> isOn(Device device) {
-        return stateService.isOn(device);
+        return stateService.isOn(device)
+            .subscribeOn(Schedulers.elastic());
     }
 
-    public void setOn(Device device, boolean power) {
+    public Mono<Void> setOn(Device device, boolean power) {
         On on = new On(power);
-        OnRequest onRequest = new OnRequest(on);
-        Mono<Void> response = stateService.setOn(device, onRequest);
-        response.subscribe();
+        OnRequest request = new OnRequest(on);
+        return stateService.setOn(device, request)
+            .subscribeOn(Schedulers.elastic());
     }
 
     public Mono<BrightnessResponse> getBrightness(Device device) {
-        return stateService.getBrightness(device);
+        return stateService.getBrightness(device)
+            .subscribeOn(Schedulers.elastic());
     }
 
-    public void setBrightness(Device device, Number brightness) {
+    public Mono<Void> setBrightness(Device device, Number brightness) {
         BrightnessValue brightnessValue = new BrightnessValue();
         brightnessValue.setValue(brightness.intValue());
-        BrightnessRequest brightnessRequest = new BrightnessRequest(brightnessValue);
-        Mono<Void> response = stateService.setBrightness(device, brightnessRequest);
-        response.subscribe();
+        BrightnessRequest request = new BrightnessRequest(brightnessValue);
+        return stateService.setBrightness(device, request)
+            .subscribeOn(Schedulers.elastic());
+    }
+
+    public Mono<HueResponse> getHue(Device device) {
+        return stateService.getHue(device)
+            .subscribeOn(Schedulers.elastic());
+    }
+
+    public Mono<Void> setHue(Device device, Number hue) {
+        HueValue hueValue = new HueValue();
+        hueValue.setValue(hue.intValue());
+        HueRequest request = new HueRequest(hueValue);
+        return stateService.setHue(device, request)
+            .subscribeOn(Schedulers.elastic());
+    }
+
+    public Mono<SaturationResponse> getSaturation(Device device) {
+        return stateService.getSaturation(device)
+            .subscribeOn(Schedulers.elastic());
+    }
+
+    public Mono<Void> setSaturation(Device device, Number saturation) {
+        SaturationValue saturationValue = new SaturationValue();
+        saturationValue.setValue(saturation.intValue());
+        SaturationRequest request = new SaturationRequest(saturationValue);
+        return stateService.setSaturation(device, request)
+            .subscribeOn(Schedulers.elastic());
     }
 
     public Mono<ColorTemperatureResponse> getColorTemperature(Device device) {
-        return stateService.getColorTemperature(device);
+        return stateService.getColorTemperature(device)
+            .subscribeOn(Schedulers.elastic());
     }
 
-    public void setColorTemperature(Device device, Number colorTemperature) {
+    public Mono<Void> setColorTemperature(Device device, Number colorTemperature) {
         ColorTemperatureValue colorTemperatureValue = new ColorTemperatureValue();
         colorTemperatureValue.setValue(colorTemperature.intValue());
         ColorTemperatureRequest colorTemperatureRequest = new ColorTemperatureRequest(colorTemperatureValue);
-        Mono<Void> response = stateService.setColorTemperature(device, colorTemperatureRequest);
-        response.subscribe();
+        return stateService.setColorTemperature(device, colorTemperatureRequest)
+            .subscribeOn(Schedulers.elastic());
     }
 
 }

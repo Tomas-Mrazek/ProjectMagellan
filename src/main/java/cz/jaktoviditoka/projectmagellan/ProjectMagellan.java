@@ -1,16 +1,16 @@
 package cz.jaktoviditoka.projectmagellan;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import reactor.core.scheduler.Schedulers;
+
+import java.io.IOException;
 
 @SpringBootApplication
 public class ProjectMagellan extends Application {
@@ -38,6 +38,7 @@ public class ProjectMagellan extends Application {
 
     @Override
     public void stop() {
+        Schedulers.shutdownNow();
         SpringApplication.exit(context, () -> 0);
     }
 

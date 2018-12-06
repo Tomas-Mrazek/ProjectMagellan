@@ -24,13 +24,11 @@ import org.apache.logging.log4j.core.config.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-
-import javax.annotation.PreDestroy;
 
 @Slf4j
 @Order(Ordered.LOWEST_PRECEDENCE)
@@ -39,9 +37,6 @@ public class NanoleafAuroraController {
 
     private Device activeDevice;
     private ObservableSet<Device> devices;
-
-    @Autowired
-    ExecutorService executor;
 
     @Autowired
     DeviceModel deviceModel;
@@ -95,11 +90,6 @@ public class NanoleafAuroraController {
         devices.addAll(deviceModel.getDevices());
     }
 
-    @PreDestroy
-    public void shutdown() {
-        executor.shutdown();
-    }
-
     private DeviceController createDeviceController(Device device) {
         DeviceController deviceController = new DeviceController(deviceModel, device);
         deviceController.init();
@@ -143,9 +133,10 @@ public class NanoleafAuroraController {
         window.setOrientation(Orientation.VERTICAL);
         window.getStyleClass().add("actionWindow");
 
-        window.getChildren().add(deviceController.getOn());
-        window.getChildren().add(deviceController.getBrightness());
-        window.getChildren().add(deviceController.getColorTemperature());
+        window.getChildren().add(deviceController.getPowerTile());
+        window.getChildren().add(deviceController.getBrightnessTile());
+        window.getChildren().add(deviceController.getColorTile());
+        window.getChildren().add(deviceController.getColorTemperatureTile());
 
         return window;
     }
@@ -236,7 +227,7 @@ public class NanoleafAuroraController {
 
         };
 
-        executor.execute(task);
+        Schedulers.elastic().schedule(task);
     }
 
     private boolean pair(Device device) throws NotAuthorizedExxception {
