@@ -1,4 +1,4 @@
-package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect;
+package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -11,5 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class DelayTimeRange extends DelayTime {
 
     int minValue;
+    int maxValue;
 
 }

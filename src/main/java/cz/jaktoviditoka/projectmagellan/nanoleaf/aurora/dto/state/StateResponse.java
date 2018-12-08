@@ -12,7 +12,7 @@ public class StateResponse {
     BrightnessResponse brightness;
     HueResponse hue;
     SaturationResponse sat;
-    ColorTemperature ct;
+    ColorTemperatureResponse ct;
     ColorMode colorMode;
 
 }

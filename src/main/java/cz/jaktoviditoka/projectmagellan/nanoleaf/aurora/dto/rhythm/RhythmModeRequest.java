@@ -1,4 +1,4 @@
-package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect;
+package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.rhythm;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-public class EffectRequest {
+public class RhythmModeRequest {
 
-    Effect write;
+    RhythmMode rhythmMode;
 
 }

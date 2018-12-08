@@ -1,4 +1,4 @@
-package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect;
+package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,8 +8,9 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode(callSuper = false)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-public class TransitionTimeValue {
+public class TransitionTimeRange extends TransitionTime {
 
-    int value;
+    int minValue;
+    int maxValue;
 
 }

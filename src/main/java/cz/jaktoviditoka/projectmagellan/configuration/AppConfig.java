@@ -26,7 +26,7 @@ public class AppConfig {
     }
 
     @Bean
-    public WebClient client() {
+    public WebClient webclient() {
         return WebClient.create();
     }
 

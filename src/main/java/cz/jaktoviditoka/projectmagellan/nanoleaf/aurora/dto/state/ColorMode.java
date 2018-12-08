@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ColorMode {
 
-    COLOR_TEMPERATURE("ct"), HUE_SATURATION("ht"), EFFECT("effect");
+    COLOR_TEMPERATURE("ct"), HUE_SATURATION("hs"), EFFECT("effect");
 
     @JsonValue
     private final String value;

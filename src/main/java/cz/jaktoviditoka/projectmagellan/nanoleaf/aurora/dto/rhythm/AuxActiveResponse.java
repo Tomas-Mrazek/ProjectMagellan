@@ -1,16 +1,15 @@
-package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect;
+package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.rhythm;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-public class EffectName {
+public class AuxActiveResponse {
 
     @JsonValue
-    String value;
+    boolean active;
 
 }

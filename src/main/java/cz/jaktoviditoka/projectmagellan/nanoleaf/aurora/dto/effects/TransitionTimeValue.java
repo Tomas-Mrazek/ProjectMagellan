@@ -1,4 +1,4 @@
-package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect;
+package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @EqualsAndHashCode(callSuper = false)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-public class DelayTimeValue extends DelayTime {
+public class TransitionTimeValue {
 
     int value;
 

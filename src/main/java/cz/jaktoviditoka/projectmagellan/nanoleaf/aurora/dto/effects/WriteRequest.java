@@ -1,4 +1,4 @@
-package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect;
+package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-public class EffectNameRequest {
+public class WriteRequest {
 
-    EffectName select;
+    Effect write;
 
 }

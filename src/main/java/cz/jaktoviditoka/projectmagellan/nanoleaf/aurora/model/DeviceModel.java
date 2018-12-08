@@ -2,10 +2,11 @@ package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model;
 
 import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.InfoResponse;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.exception.NotAuthorizedExxception;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.AuthorizationService;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.InfoService;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import cz.jaktoviditoka.projectmagellan.settings.AppSettings;
 import cz.jaktoviditoka.projectmagellan.ssdp.SSDPClient;
@@ -15,9 +16,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -37,14 +36,16 @@ public class DeviceModel {
     AppSettings appSettings;
     SSDPClient ssdpclient;
     AuthorizationService authService;
+    InfoService infoService;
     StateService stateService;
 
     @Autowired
     public DeviceModel(AppSettings appSettings, SSDPClient ssdpclient,
-            AuthorizationService authService, StateService stateService) {
+            AuthorizationService authService, InfoService infoService, StateService stateService) {
         this.appSettings = appSettings;
         this.ssdpclient = ssdpclient;
         this.authService = authService;
+        this.infoService = infoService;
         this.stateService = stateService;
     }
 
@@ -57,44 +58,37 @@ public class DeviceModel {
         ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA, devices);
     }
 
-    public boolean pair(Device device) throws NotAuthorizedExxception {
+    public Mono<Boolean> pair(Device device) {
         if (StringUtils.isNotEmpty(device.getAuthToken())) {
             log.warn("Device is already paired.");
-            return false;
+            return Mono.just(false).log();
         }
-        Authorization auth = new Authorization();
-        try {
-            auth = authService.addUser(device);
-        } catch (HttpStatusCodeException e) {
-            log.warn("Failed to pair device.", e);
-            if (e.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
-                throw new NotAuthorizedExxception();
-            }
-            return false;
-        }
-        if (StringUtils.isEmpty(auth.getAuthToken())) {
-            log.warn("Failed to pair device – auth token does not exist.");
-            return false;
-        }
-        device.setAuthToken(auth.getAuthToken());
-
-        appSettings.getDevices().add(device);
-        try {
-            appSettings.saveSettings();
-        } catch (IOException e) {
-            log.error("Failed to save paired device.", e);
-        }
-
-        return true;
+        return authService.addUser(device)
+            .map(Authorization::getAuthToken)
+            .log()
+            .filter(StringUtils::isNotEmpty)
+            .log()
+            .switchIfEmpty(Mono.error(new IllegalStateException("Failed to pair device - auth token does not exist.")))
+            .doOnSuccess(consumer -> {
+                device.setAuthToken(consumer);
+            })
+            .doOnError(consumer -> {
+                log.warn("Error inside DeviceModel.", consumer);
+            })
+            .flatMap(mapper -> {
+                appSettings.getDevices().add(device);
+                try {
+                    appSettings.saveSettings();
+                } catch (IOException e) {
+                    log.error("Failed to save paired device.", e);
+                    return Mono.error(e);
+                }
+                return Mono.just(true).log();
+            });
     }
 
-    public boolean unpair(Device device) {
-        try {
-            authService.deleteUser(device);
-        } catch (HttpStatusCodeException e) {
-            log.warn("Failed to unpair device.", e);
-            return false;
-        }
+    public Mono<Boolean> unpair(Device device) {
+        authService.deleteUser(device).block();
 
         appSettings.getDevices().remove(device);
         try {
@@ -103,7 +97,12 @@ public class DeviceModel {
             log.error("Failed to save removed device to settings.", e);
         }
 
-        return true;
+        return Mono.just(true);
+    }
+
+    public Mono<InfoResponse> getInfo(Device device) {
+        return infoService.getInfo(device)
+            .subscribeOn(Schedulers.elastic());
     }
 
     public Mono<OnResponse> isOn(Device device) {
@@ -167,6 +166,11 @@ public class DeviceModel {
         colorTemperatureValue.setValue(colorTemperature.intValue());
         ColorTemperatureRequest colorTemperatureRequest = new ColorTemperatureRequest(colorTemperatureValue);
         return stateService.setColorTemperature(device, colorTemperatureRequest)
+            .subscribeOn(Schedulers.elastic());
+    }
+
+    public Mono<ColorMode> getColorMode(Device device) {
+        return stateService.getColorMode(device)
             .subscribeOn(Schedulers.elastic());
     }
 

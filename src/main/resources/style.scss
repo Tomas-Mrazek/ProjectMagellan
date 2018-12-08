@@ -1,0 +1,146 @@
+@font-face {
+    src: url('/fonts/Roboto/Roboto-Regular.ttf');
+}
+
+@font-face {
+    src: url('/fonts/Roboto/Roboto-Bold.ttf');
+}
+
+@font-face {
+    src: url('/fonts/Roboto/Roboto-Black.ttf');
+}
+
+@font-face {
+    src: url('/fonts/Open_Sans/OpenSans-Regular.ttf');
+}
+
+$primary-color-dark: #ffff00;
+$primary-color-light: #ffffa0;
+$secondary-color-dark: #1a1a1a;
+$secondary-color-light: #333333;
+
+.root {
+    -fx-font-family: 'Roboto';
+}
+
+.left-window {
+	-fx-padding: 20.0;
+	-fx-spacing: 20.0;
+	-fx-background-color: $secondary-color-light;	
+}
+
+.discover-button {
+	-fx-background-radius: 30.0;
+	-fx-background-color: $primary-color-dark;
+    -fx-font-family: 'Roboto Bold';
+    -fx-font-size: 20.0;
+}
+
+.paired-device-selected {
+	-fx-border-color: $primary-color-dark;
+}
+
+.paired-device {
+	-fx-border-color: transparent;
+	-fx-border-width: 1.0;
+	-fx-border-radius: 5.0;
+	-fx-background-radius: 5.0;
+	-fx-background-color: $secondary-color-dark;
+}
+
+.close-icon {
+	-fx-background-radius: 30.0;
+	-fx-pref-width: 30.0px;
+	-fx-pref-height: 30.0px;
+	-fx-background-color: transparent;
+}
+
+.close-icon:hover {
+	-fx-cursor: hand;
+}
+
+.actionWindowScroll {
+	-fx-background: $secondary-color-light;
+}
+
+.actionWindow {
+	-fx-background-color: $secondary-color-light;
+	-fx-padding: 20.0;
+	-fx-vgap: 20.0;
+	-fx-hgap: 20.0;
+}
+
+.actionTile {
+	-fx-background-radius: 5.0;	
+    -fx-background-color: $secondary-color-dark;
+    -fx-padding: 20.0;
+}
+
+.actionTileName {
+    -fx-font-size: 24.0;
+    -fx-font-weight: bold;
+    -fx-fill: $primary-color-dark;
+}
+
+.actionTileDescription {
+    -fx-font-size: 16.0;
+    -fx-font-weight: normal;
+    -fx-fill: #ffffff;
+}
+
+.discoverTileText {
+    -fx-fill: white;
+}
+
+.jfx-toggle-button {
+	-jfx-toggle-color: $primary-color-dark;
+	-jfx-toggle-line-color: $primary-color-light;
+}
+
+.slider .axis {
+    -fx-padding: 20.0;
+    -fx-tick-label-font-size: 16.0;
+    -fx-tick-label-font-weight: normal;
+    -fx-tick-label-fill: #ffffff;
+}
+
+.jfx-slider > .track {
+	-fx-background-color: #ffffff;
+}
+
+.jfx-slider > .thumb {
+	-fx-background-color: $primary-color-dark;
+}
+
+.jfx-slider > .colored-track {
+	-fx-background-color: $primary-color-light;
+}
+
+.jfx-slider > .animated-thumb {
+	-fx-background-color: $primary-color-dark;
+}
+
+.jfx-slider .slider-value {
+    -fx-font-family: 'Roboto Black';
+	-fx-font-size: 16.0;
+	-fx-fill: black;
+	-fx-stroke-width: 0.0;
+}
+
+
+.jfx-tab-pane .headers-region {
+    -fx-background-color: $secondary-color-dark;
+	-fx-background-radius: 5.0 5.0 0.0 0.0;
+}
+
+.jfx-tab-pane .headers-region .tab:selected .tab-container .tab-label {
+    -fx-text-fill: $primary-color-dark;
+}
+
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.jfx-tab-pane .tab-selected-line {
+	-fx-background-color:  $primary-color-dark;
+}

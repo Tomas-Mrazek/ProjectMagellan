@@ -11,6 +11,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
+import javafx.util.StringConverter;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,6 +43,25 @@ public class ColorTemperatureTile extends ActionTile {
         colorTemperature.setShowTickLabels(true);
         colorTemperature.setMajorTickUnit(MAX);
         colorTemperature.setPadding(new Insets(20));
+        colorTemperature.setLabelFormatter(new StringConverter<Double>() {
+            @Override
+            public String toString(Double n) {
+                if (n.intValue() == MIN)
+                    return MIN + " K";
+                if (n.intValue() == MAX)
+                    return MAX + " K";
+                return n.toString();
+            }
+
+            @Override
+            public Double fromString(String s) {
+                if (s.equals(MIN + "K"))
+                    return Double.valueOf(MIN);
+                if (s.equals(MAX + "K"))
+                    return Double.valueOf(MAX);
+                return Double.valueOf(s);
+            }
+        });
 
         tileName = new Text("COLOR TEMPERATURE");
         tileName.getStyleClass().add("actionTileName");
@@ -62,10 +82,10 @@ public class ColorTemperatureTile extends ActionTile {
         cc.setHgrow(hpriority);
         RowConstraints rc = new RowConstraints();
         rc.setValignment(vpos);
-        //pane.setGridLinesVisible(true);
         pane.getColumnConstraints().add(cc);
         pane.getRowConstraints().add(rc);
         pane.add(node, column, row);
+        //pane.setGridLinesVisible(true);
         //pane.setStyle("-fx-border-color:white");
         return pane;
     }

@@ -1,6 +1,7 @@
 package cz.jaktoviditoka.projectmagellan.gui.view;
 
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -26,13 +27,14 @@ public class PairedDeviceView extends GridPane {
         setMargin(image, new Insets(5));
         setMargin(name, new Insets(5));
         setMargin(unpairButton, new Insets(5));
-        setGridLinesVisible(true);
+        //setGridLinesVisible(true);
         ColumnConstraints left = new ColumnConstraints();
         left.setHgrow(Priority.NEVER);
         ColumnConstraints middle = new ColumnConstraints();
         middle.setHgrow(Priority.ALWAYS);
         ColumnConstraints right = new ColumnConstraints();
         right.setHgrow(Priority.NEVER);
+        GridPane.setValignment(unpairButton, VPos.TOP);
         getColumnConstraints().addAll(left, middle, right);
     }
 

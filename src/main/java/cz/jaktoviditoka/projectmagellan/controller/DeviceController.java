@@ -3,13 +3,10 @@ package cz.jaktoviditoka.projectmagellan.controller;
 import com.jfoenix.controls.JFXColorPicker;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXToggleButton;
-import cz.jaktoviditoka.projectmagellan.gui.view.BrightnessTile;
-import cz.jaktoviditoka.projectmagellan.gui.view.ColorTemperatureTile;
-import cz.jaktoviditoka.projectmagellan.gui.view.ColorTile;
-import cz.jaktoviditoka.projectmagellan.gui.view.PowerTile;
+import cz.jaktoviditoka.projectmagellan.gui.view.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
+import javafx.scene.control.Tab;
 import javafx.scene.paint.Color;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -36,6 +33,11 @@ public class DeviceController {
     ColorTile colorTile;
     ColorTemperatureTile colorTemperatureTile;
 
+    ActionTabPane colorModeTab;
+    Tab whiteTab;
+    Tab colorTab;
+    Tab effectTab;
+
     public void init() {
         JFXToggleButton onButton = new JFXToggleButton();
         powerTile = new PowerTile(onButton);
@@ -60,9 +62,9 @@ public class DeviceController {
                 .delaySubscription(monoHue);
             Mono<Void> monoBrightness = deviceModel.setBrightness(device, colorPicker.getValue().getBrightness() * 100)
                 .delaySubscription(monoSaturation);
-            monoHue.subscribe();
-            monoSaturation.subscribe();
             monoBrightness.subscribe();
+            monoSaturation.subscribe();
+            monoHue.subscribe();
         });
 
         JFXSlider colorTempSlider = new JFXSlider();
@@ -71,6 +73,17 @@ public class DeviceController {
         colorTempSlider.setOnMouseReleased(event -> {
             deviceModel.setColorTemperature(device, colorTempSlider.getValue()).subscribe();
         });
+
+        whiteTab = new Tab("BASIC");
+        whiteTab.setContent(colorTemperatureTile);
+
+        colorTab = new Tab("COLOR");
+        colorTab.setContent(colorTile);
+
+        effectTab = new Tab("EFFECT");
+
+        colorModeTab = new ActionTabPane();
+        colorModeTab.getTabs().addAll(whiteTab, colorTab, effectTab);
     }
 
     public void refresh() {
@@ -80,28 +93,30 @@ public class DeviceController {
         JFXColorPicker colorPicker = colorTile.getColor();
         JFXSlider colorTempSlider = colorTemperatureTile.getColorTemperature();
 
-        deviceModel.isOn(device)
-            .map(OnResponse::isValue)
-            .subscribe(onButton::setSelected);
-
-        deviceModel.getBrightness(device)
-            .map(BrightnessResponse::getValue)
-            .subscribe(brightnessSlider::setValue);
-
-        deviceModel.getColorTemperature(device)
-            .map(ColorTemperatureResponse::getValue)
-            .subscribe(colorTempSlider::setValue);
-
-        Mono<BrightnessResponse> monoBrightness = deviceModel.getBrightness(device);
-        Mono<HueResponse> monoHue = deviceModel.getHue(device).delaySubscription(monoBrightness);
-        Mono<SaturationResponse> monoSaturation = deviceModel.getSaturation(device).delaySubscription(monoHue);
-        Mono
-            .zip(monoHue, monoSaturation, monoBrightness)
-            .map(map -> map.mapT1(mapper -> Double.valueOf(mapper.getValue())))
-            .map(map -> map.mapT2(mapper -> Double.valueOf(mapper.getValue()) / 100))
-            .map(map -> map.mapT3(mapper -> Double.valueOf(mapper.getValue()) / 100))
-            .map(map -> Color.hsb(map.getT1(), map.getT2(), map.getT3()))
-            .subscribe(colorPicker::setValue);
+        deviceModel.getInfo(device)
+            .log()
+            .subscribe(value -> {
+                onButton.setSelected(value.getState().getOn().isValue());
+                brightnessSlider.setValue(value.getState().getBrightness().getValue());
+                switch (value.getState().getColorMode()) {
+                    case COLOR_TEMPERATURE:
+                        colorModeTab.getSelectionModel().select(whiteTab);
+                        break;
+                    case HUE_SATURATION:
+                        colorModeTab.getSelectionModel().select(colorTab);
+                        break;
+                    case EFFECT:
+                        colorModeTab.getSelectionModel().select(effectTab);
+                        break;
+                    default:
+                        break;
+                }
+                colorTempSlider.setValue(value.getState().getCt().getValue());
+                colorPicker.setValue(Color.hsb(
+                        value.getState().getHue().getValue(),
+                        value.getState().getSat().getValue() / 100d,
+                        value.getState().getBrightness().getValue() / 100d));
+            });
 
     }
 

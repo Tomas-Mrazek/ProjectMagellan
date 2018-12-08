@@ -13,72 +13,48 @@
 <?import javafx.scene.control.*?>
 <?import com.jfoenix.controls.*?>
 
-<VBox prefHeight="900.0" prefWidth="1600.0"
-    xmlns="http://javafx.com/javafx/8.0.191"
+<VBox prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8.0.191"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafAuroraController">
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafAuroraController"
+    fx:id="rootVbox">
     <children>
         <HBox VBox.vgrow="ALWAYS">
             <children>
-                <AnchorPane maxWidth="-Infinity"
-                    minWidth="-Infinity" prefWidth="400.0"
-                    HBox.hgrow="ALWAYS">
+                <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="400.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <VBox AnchorPane.bottomAnchor="0.0"
-                            AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0"
-                            AnchorPane.topAnchor="0.0">
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="leftWindow">
                             <children>
-                                <Button fx:id="discoverButton"
-                                    maxHeight="1.7976931348623157E308"
-                                    maxWidth="1.7976931348623157E308"
-                                    mnemonicParsing="false"
-                                    onAction="#discover" text="DISCOVER"
-                                    textAlignment="CENTER"
-                                    wrapText="true" />
-                                <JFXListView
-                                    fx:id="pairedDevices" />
+                                <JFXButton fx:id="discoverButton" />
+                                <VBox fx:id="pairedDevices" />
                             </children>
                         </VBox>
                     </children>
                 </AnchorPane>
-                <AnchorPane fx:id="actionWindow"
-                    HBox.hgrow="ALWAYS">
+                <AnchorPane fx:id="actionWindow" HBox.hgrow="ALWAYS">
                     <children>
-                        <ScrollPane
-                            fx:id="actionWindowScroll"
-                            styleClass="actionWindowScroll"
-                            AnchorPane.bottomAnchor="0.0"
-                            AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0"
+                        <ScrollPane fx:id="actionWindowScroll" styleClass="actionWindowScroll"
+                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                             AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
             </children>
         </HBox>
-        <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0"
-            VBox.vgrow="NEVER">
+        <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
             <children>
-                <Label maxHeight="1.7976931348623157E308"
-                    maxWidth="-1.0" text="Left status"
-                    HBox.hgrow="ALWAYS">
+                <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="11.0" fx:id="x3" />
                     </font>
                     <textFill>
-                        <Color blue="0.625" green="0.625"
-                            red="0.625" fx:id="x4" />
+                        <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
                     </textFill>
                 </Label>
-                <Pane prefHeight="-1.0" prefWidth="-1.0"
-                    HBox.hgrow="ALWAYS" />
-                <Label font="$x3" maxWidth="-1.0"
-                    text="Right status" textFill="$x4"
-                    HBox.hgrow="NEVER" />
+                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+                <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
             </children>
             <padding>
-                <Insets bottom="3.0" left="3.0" right="3.0"
-                    top="3.0" />
+                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
             </padding>
         </HBox>
     </children>

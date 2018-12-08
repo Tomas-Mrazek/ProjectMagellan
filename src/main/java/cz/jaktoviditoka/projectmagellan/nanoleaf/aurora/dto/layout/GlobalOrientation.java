@@ -1,4 +1,4 @@
-package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect;
+package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.layout;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -6,9 +6,8 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-public class BrightnessRange {
+public class GlobalOrientation {
 
-    int minValue;
-    int maxValue;
+    int value;
 
 }

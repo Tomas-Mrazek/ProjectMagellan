@@ -1,22 +1,18 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
-
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.Effect;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.EffectName;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.EffectNameList;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.EffectNameRequest;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effect.EffectRequest;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.Effect;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.EffectsNameRequest;
+import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.WriteRequest;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.EffectsService;
 import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 @Service
 public class EffectsServiceImpl implements EffectsService {
@@ -25,39 +21,48 @@ public class EffectsServiceImpl implements EffectsService {
     private static final String EFFECTS_NAME = "/effects/select";
     private static final String EFFECTS_LIST = "/effects/effectsList";
 
-    @Autowired
-    RestTemplate restTemplate;
-
     @Override
-    public EffectName getCurrentEffect(Device device) {
+    public Mono<String> getCurrentEffect(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_NAME);
-        ResponseEntity<EffectName> response = restTemplate.getForEntity(uri, EffectName.class);
-        return response.getBody();
+        return WebClient.create()
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(String.class);
     }
 
     @Override
-    public void setCurrentEffect(Device device, EffectNameRequest effectName) {
+    public Mono<Void> setCurrentEffect(Device device, EffectsNameRequest effectName) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_NAME);
-        restTemplate.put(uri, effectName);
+        return WebClient.create()
+            .method(HttpMethod.PUT)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(Void.class);
     }
 
     @Override
-    public EffectNameList getEffects(Device device) {
+    public Flux<String> getEffects(Device device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_LIST);
-        ResponseEntity<EffectNameList> response = restTemplate.getForEntity(uri, EffectNameList.class);
-        return response.getBody();
+        return WebClient.create()
+            .method(HttpMethod.GET)
+            .uri(uri)
+            .retrieve()
+            .bodyToFlux(String.class);
     }
 
     @Override
-    public Effect createEffect(Device device, EffectRequest effect) {
+    public Mono<Effect> createEffect(Device device, WriteRequest effect) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_NAME);
-        ResponseEntity<Effect> response = restTemplate.exchange(uri, HttpMethod.PUT,
-                new HttpEntity<EffectRequest>(effect), Effect.class);
-        return response.getBody();
+        return WebClient.create()
+            .method(HttpMethod.PUT)
+            .uri(uri)
+            .retrieve()
+            .bodyToMono(Effect.class);
     }
 
 }
