@@ -39,8 +39,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             .onStatus(
                     HttpStatus.UNPROCESSABLE_ENTITY::equals,
                     response -> Mono.error(new NotAuthorizedException("Unknown error.")))
-            .bodyToMono(Authorization.class)
-            .log();
+            .bodyToMono(Authorization.class);
     }
 
     @Override

@@ -54,6 +54,10 @@ public class DeviceModel {
         devices = appSettings.getDevices();
     }
 
+    public void saveSettings() throws IOException {
+        appSettings.saveSettings();
+    }
+
     public void discover(Set<Device> devices) throws IOException {
         ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA, devices);
     }
@@ -84,7 +88,8 @@ public class DeviceModel {
                     return Mono.error(e);
                 }
                 return Mono.just(true).log();
-            });
+            })
+            .subscribeOn(Schedulers.elastic());
     }
 
     public Mono<Boolean> unpair(Device device) {

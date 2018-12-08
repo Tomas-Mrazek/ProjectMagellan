@@ -1,19 +1,14 @@
 package cz.jaktoviditoka.projectmagellan.ssdp;
 
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.util.Set;
-import java.util.UUID;
-
 import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.net.*;
+import java.util.Set;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -24,7 +19,7 @@ public class SSDPClient {
 
     int timeout = 5 * 1000;
 
-    public Set<Device> mSearch(BaseDeviceType deviceType, Set<Device> devices) throws IOException {
+    public void mSearch(BaseDeviceType deviceType, Set<Device> devices) throws IOException {
         byte[] receiveData = new byte[1024];
         
         StringBuilder request = new StringBuilder();
@@ -80,7 +75,6 @@ public class SSDPClient {
         }
         
         socket.close();
-        return devices;
     }
 
 }

@@ -15,27 +15,25 @@
 
 <VBox prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8.0.191"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafAuroraController"
-    fx:id="rootVbox">
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafAuroraController" fx:id="rootVbox">
     <children>
         <HBox VBox.vgrow="ALWAYS">
             <children>
-                <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="400.0" HBox.hgrow="ALWAYS">
+                <AnchorPane prefWidth="400.0">
                     <children>
-                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="leftWindow">
+                        <VBox fx:id="leftWindow" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <JFXButton fx:id="discoverButton" />
+                                <Button fx:id="discoverButton" />
                                 <VBox fx:id="pairedDevices" />
                             </children>
                         </VBox>
                     </children>
                 </AnchorPane>
-                <AnchorPane fx:id="actionWindow" HBox.hgrow="ALWAYS">
+                <AnchorPane HBox.hgrow="ALWAYS">
                     <children>
-                        <ScrollPane fx:id="actionWindowScroll" styleClass="actionWindowScroll"
-                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                            AnchorPane.topAnchor="0.0" />
+                        <ScrollPane fx:id="actionWindowScroll" AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
             </children>

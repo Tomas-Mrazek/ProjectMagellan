@@ -19,34 +19,53 @@
   -fx-background-color: #333333; }
 
 .discover-button {
-  -fx-background-radius: 30.0;
+  -fx-background-radius: 20.0;
   -fx-background-color: #ffff00;
   -fx-font-family: 'Roboto Bold';
-  -fx-font-size: 20.0; }
+  -fx-font-size: 20.0;
+  -fx-text-fill: black; }
+
+.spinner {
+  -fx-background-color: transparent; }
+
+.spinner .arc {
+  -fx-stroke: #ffff00;
+  -fx-stroke-width: 6.0; }
 
 .paired-device-selected {
   -fx-border-color: #ffff00; }
 
 .paired-device {
-  -fx-border-color: transparent;
+  -fx-border-color: #ffff00;
   -fx-border-width: 1.0;
   -fx-border-radius: 5.0;
   -fx-background-radius: 5.0;
   -fx-background-color: #1a1a1a; }
 
-.close-icon {
+.paired-device-name {
+  -fx-background-color: #333333;
+  -fx-text-fill: white;
+  -fx-font-size: 16.0; }
+
+.paired-device-name:disabled {
+  -fx-background-color: #1a1a1a;
+  -fx-opacity: 1.0; }
+
+.button-icon {
   -fx-background-radius: 30.0;
   -fx-pref-width: 30.0px;
   -fx-pref-height: 30.0px;
   -fx-background-color: transparent; }
 
-.close-icon:hover {
+.button-icon:hover {
   -fx-cursor: hand; }
 
-.actionWindowScroll {
-  -fx-background: #333333; }
+.action-window-scroll {
+  -fx-padding: 0;
+  -fx-background: #333333;
+  -fx-background-insets: 0; }
 
-.actionWindow {
+.action-window {
   -fx-background-color: #333333;
   -fx-padding: 20.0;
   -fx-vgap: 20.0;
