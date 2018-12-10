@@ -15,10 +15,10 @@
         <Logger name="org.apache.http" level="info" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="reactor" level="debug" additivity="false">
+        <Logger name="reactor" level="info" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="io.netty" level="debug" additivity="false">
+        <Logger name="io.netty" level="info" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
         <Logger name="cz.jaktoviditoka" level="debug" additivity="false">

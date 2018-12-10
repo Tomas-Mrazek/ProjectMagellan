@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Slf4j
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 public class DeviceController {
@@ -27,6 +28,7 @@ public class DeviceController {
     @EqualsAndHashCode.Include
     @NonNull
     final Device device;
+
 
     PowerTile powerTile;
     BrightnessTile brightnessTile;

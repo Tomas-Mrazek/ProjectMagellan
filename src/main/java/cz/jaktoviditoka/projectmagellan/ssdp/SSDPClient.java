@@ -2,6 +2,8 @@ package cz.jaktoviditoka.projectmagellan.ssdp;
 
 import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -11,14 +13,15 @@ import java.net.*;
 import java.util.UUID;
 
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Component
 public class SSDPClient {
 
-    private static final String SSDP_IP = "239.255.255.250";
-    private static final int SSDP_PORT = 1900;
-    private static final int TIMEOUT = 5000;
+    static final String SSDP_IP = "239.255.255.250";
+    static final int SSDP_PORT = 1900;
+    static final int TIMEOUT = 5000;
 
-    private static final String NANOLEAF_AURORA = "nanoleaf_aurora:light";
+    static final String NANOLEAF_AURORA = "nanoleaf_aurora:light";
 
     public Flux<Device> mSearch(BaseDeviceType deviceType) throws UnknownHostException {
 
@@ -57,8 +60,9 @@ public class SSDPClient {
             }
         })
             .map(mapper -> new String(receivePacket.getData(), 0, receivePacket.getLength()))
-            .filter(filter -> supportedDevices(filter))
-            .map(mapper -> transform(mapper));
+            .filter(this::supportedDevices)
+            .map(this::transform);
+
     }
 
     private boolean supportedDevices(String response) {

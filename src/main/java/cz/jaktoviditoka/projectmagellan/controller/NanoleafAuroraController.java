@@ -5,7 +5,6 @@ import cz.jaktoviditoka.projectmagellan.gui.view.DiscoveredDeviceView;
 import cz.jaktoviditoka.projectmagellan.gui.view.PairedDeviceView;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -22,6 +21,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.core.config.Order;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -39,18 +40,15 @@ import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Order(Ordered.LOWEST_PRECEDENCE)
 @Component
 public class NanoleafAuroraController {
 
-    private Device activeDevice;
-    private ObservableSet<Device> devices;
+    ObservableSet<Device> devices;
 
     @Autowired
     DeviceModel deviceModel;
-
-    @Autowired
-    StateService stateService;
 
     Set<DeviceController> deviceControllers;
 
@@ -70,7 +68,8 @@ public class NanoleafAuroraController {
     ScrollPane actionWindowScroll;
 
     FlowPane actionWindowDiscover;
-    FlowPane actionWindowControl;
+    
+    DeviceController activeDeviceController;
 
     static final String IMAGE_NANOLEAF_AURORA = "image/nanoleaf-aurora-transparent-hires.png";
 
@@ -100,7 +99,8 @@ public class NanoleafAuroraController {
             if (change.wasAdded()) {
                 DeviceController deviceController = createDeviceController(change.getElementAdded());
                 FlowPane window = createActiveWindowControl(deviceController);
-                PairedDeviceView deviceView = createPiredDeviceView(deviceController.getDevice(), window);
+                PairedDeviceView deviceView = createPiredDeviceView(deviceController.getDevice(), window,
+                        deviceController);
                 Platform.runLater(() -> {
                     pairedDevices.getChildren().add(deviceView);
                 });
@@ -113,7 +113,7 @@ public class NanoleafAuroraController {
     //@Scheduled(initialDelay = 10000, fixedRate = 5000)
     public void refreshState() {
         Optional<DeviceController> deviceControllerOpt = deviceControllers.stream()
-            .filter(e -> e.getDevice().equals(activeDevice))
+            .filter(e -> e.equals(activeDeviceController))
             .findFirst();
         if (deviceControllerOpt.isPresent()) {
             deviceControllerOpt.get().refresh();
@@ -139,12 +139,12 @@ public class NanoleafAuroraController {
         return window;
     }
 
-    private PairedDeviceView createPiredDeviceView(Device device, FlowPane window) {
+    private PairedDeviceView createPiredDeviceView(Device device, FlowPane window, DeviceController deviceController) {
         PairedDeviceView view = new PairedDeviceView();
 
         EventHandler<MouseEvent> event = e -> {
             actionWindowScroll.setContent(window);
-            activeDevice = device;
+            activeDeviceController = deviceController;
             refreshState();
         };
 
