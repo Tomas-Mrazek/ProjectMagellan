@@ -10,7 +10,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -282,6 +281,7 @@ public class NanoleafAuroraController {
         actionWindowDiscover.setOrientation(Orientation.HORIZONTAL);
         actionWindowDiscover.setAlignment(Pos.CENTER);
         actionWindowScroll.setContent(actionWindowDiscover);
+        discoverButton.setDisable(true);
 
         ObservableSet<Device> newDevices = FXCollections.observableSet(new HashSet<>());
         SetChangeListener<Device> newDevicesListener = change -> {
@@ -299,18 +299,18 @@ public class NanoleafAuroraController {
         };
         newDevices.addListener(newDevicesListener);
 
-        Task<Void> task = new Task<>() {
-
-            @Override
-            protected Void call() throws Exception {
-                deviceModel.discover(newDevices);
-                log.debug("Discovered devices: {}", newDevices);
-                return null;
-            }
-
-        };
-
-        Schedulers.elastic().schedule(task);
+        deviceModel.discover()
+            .log()
+            .subscribeOn(Schedulers.elastic())
+            .subscribe(device -> {
+                newDevices.add(device);
+            }, error -> {
+                log.error("Error during SSDP discovery.", error);
+            }, () -> {
+                Platform.runLater(() -> {
+                    discoverButton.setDisable(false);
+                });
+            });
     }
 
     private Mono<Boolean> pair(Device device) {

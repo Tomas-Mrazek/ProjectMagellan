@@ -1,22 +1,20 @@
 package cz.jaktoviditoka.projectmagellan.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetAddress;
 import java.util.UUID;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 @Data
 public abstract class BaseDevice {
 
     final BaseDeviceType baseDeviceType;
-    @EqualsAndHashCode.Include
     UUID uuid;
     String name;
+    @EqualsAndHashCode.Exclude
     String displayName;
     InetAddress ip;
     int port;

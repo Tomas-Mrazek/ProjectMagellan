@@ -17,10 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -58,8 +60,12 @@ public class DeviceModel {
         appSettings.saveSettings();
     }
 
-    public void discover(Set<Device> devices) throws IOException {
-        ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA, devices);
+    public Flux<Device> discover() {
+        try {
+            return ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA);
+        } catch (UnknownHostException e) {
+            return Flux.error(e);
+        }
     }
 
     public Mono<Boolean> pair(Device device) {
