@@ -5,6 +5,7 @@ import cz.jaktoviditoka.projectmagellan.gui.view.DiscoveredDeviceView;
 import cz.jaktoviditoka.projectmagellan.gui.view.PairedDeviceView;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
+import cz.jaktoviditoka.projectmagellan.utils.PerformanceClock;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -24,12 +25,10 @@ import javafx.scene.text.Text;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.core.config.Order;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -41,7 +40,6 @@ import java.util.Set;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Order(Ordered.LOWEST_PRECEDENCE)
 @Component
 public class NanoleafAuroraController {
 
@@ -50,10 +48,10 @@ public class NanoleafAuroraController {
     @Autowired
     DeviceModel deviceModel;
 
-    Set<DeviceController> deviceControllers;
+    @Autowired
+    PerformanceClock clock;
 
-    @FXML
-    VBox rootVbox;
+    Set<DeviceController> deviceControllers;
 
     @FXML
     VBox leftWindow;
@@ -73,7 +71,9 @@ public class NanoleafAuroraController {
 
     static final String IMAGE_NANOLEAF_AURORA = "image/nanoleaf-aurora-transparent-hires.png";
 
-    public void initialize() {
+    @FXML
+    private void initialize() {
+        log.debug("NanoleafAuroraController.initialize() – start: {}", clock.check());
         deviceControllers = new HashSet<>();
 
         leftWindow.getStyleClass().add("left-window");
@@ -108,6 +108,7 @@ public class NanoleafAuroraController {
         };
         devices.addListener(devicesListener);
         devices.addAll(deviceModel.getDevices());
+        log.debug("NanoleafAuroraController.initialize() – end: {}", clock.check());
     }
 
     //@Scheduled(initialDelay = 10000, fixedRate = 5000)

@@ -1,0 +1,16 @@
+{
+    "title": "Project Magellan",
+    "description": "This is a REST interface test application",
+    "author": {
+        "name": "Tomáš Mrázek",
+        "contact": "https://github.com/Tomas-Mrazek"
+    },
+    "device_supported": [
+        "keyboard",
+        "mouse",
+        "headset",
+        "mousepad",
+        "keypad",
+        "chromalink"],
+    "category": "application"
+}

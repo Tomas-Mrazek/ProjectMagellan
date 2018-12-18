@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import com.jfoenix.controls.*?>
 
-<VBox prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8.0.191"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafAuroraController" fx:id="rootVbox">
+<VBox xmlns:fx="http://javafx.com/fxml"
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafAuroraController">
     <children>
         <HBox VBox.vgrow="ALWAYS">
             <children>

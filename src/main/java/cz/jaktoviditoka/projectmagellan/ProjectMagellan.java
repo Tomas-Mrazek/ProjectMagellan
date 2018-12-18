@@ -16,18 +16,17 @@ import java.io.IOException;
 public class ProjectMagellan extends Application {
 
     private ConfigurableApplicationContext context;
-    private FXMLLoader fxmlLoader;
 
     @Override
     public void init() {
         context = SpringApplication.run(ProjectMagellan.class);
-        fxmlLoader = new FXMLLoader();
-        fxmlLoader.setControllerFactory(context::getBean);
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        fxmlLoader.setLocation(getClass().getResource("/nanoleaf-aurora.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setControllerFactory(context::getBean);
+        fxmlLoader.setLocation(getClass().getResource("/fxml/Main.fxml"));
         Parent rootNode = fxmlLoader.load();
         Scene scene = new Scene(rootNode);
         scene.getStylesheets().add("/style.css");

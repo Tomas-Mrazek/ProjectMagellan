@@ -23,6 +23,49 @@ $secondary-color-light: #333333;
     -fx-font-family: 'Roboto';
 }
 
+.menu {
+	-fx-padding: 0;
+	-fx-background-color: $primary-color-dark;
+}
+
+.menu-button {
+	-fx-padding: 10;
+	-fx-background-color: transparent;
+	-fx-border-width: 4;
+	-fx-border-color: transparent;
+    -fx-font-family: 'Roboto Bold';
+    -fx-font-size: 20;
+    -fx-text-fill: black	
+}
+
+.menu-button:hover {
+	-fx-background-color: $primary-color-light;
+}
+
+.menu-button-selected {
+	-fx-border-color: transparent transparent $secondary-color-dark transparent;
+}
+
+.content {
+	-fx-background-color: $secondary-color-light;
+	-fx-padding: 20;
+	-fx-vgap: 20;
+	-fx-hgap: 20;
+}
+
+.tile {
+	-fx-background-radius: 5;	
+    -fx-background-color: $secondary-color-dark;
+    -fx-padding: 20;
+}
+
+.tile > * {
+    -fx-font-size: 20;
+    -fx-fill: white;
+}
+
+
+
 .left-window {
 	-fx-padding: 20.0;
 	-fx-spacing: 20.0;

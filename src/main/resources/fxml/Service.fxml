@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.FlowPane?>
+
+<FlowPane xmlns:fx="http://javafx.com/fxml"
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.ServiceController" fx:id="pane" styleClass="content">
+    <!-- TODO Add Nodes -->
+</FlowPane>
+
