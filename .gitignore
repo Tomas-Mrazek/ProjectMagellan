@@ -4,6 +4,10 @@
 .metadata
 .classpath
 
+# Idea
+.idea/
+*.iml
+
 # Java
 *target*
 *.class

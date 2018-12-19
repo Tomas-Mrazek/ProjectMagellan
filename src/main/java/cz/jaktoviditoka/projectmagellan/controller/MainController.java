@@ -1,5 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -42,18 +43,21 @@ public class MainController {
     @FXML
     BorderPane content;
 
-    VBox nanoleafAurora;
     FlowPane service;
     ServiceController serviceController;
 
     static final String CSS_BUTTON_SELECTED = "menu-button-selected";
 
     @FXML
-    private void initialize() throws IOException {
-        nanoleafAurora = createFxmlLoader("/fxml/Nanoleaf-aurora.fxml").load();
+    private void initialize() {
         FXMLLoader serviceLoader = createFxmlLoader("/fxml/Service.fxml");
-        service = serviceLoader.load();
-        serviceController = serviceLoader.getController();
+        try {
+            service = serviceLoader.load();
+            serviceController = serviceLoader.getController();
+        } catch (IOException e) {
+            log.error("Failed to load FXML.", e);
+            Platform.exit();
+        }
         dashboardContent();
     }
 
@@ -65,7 +69,7 @@ public class MainController {
             .filter(el -> el.equals(dashboardButton))
             .findAny()
             .ifPresent(el -> el.getStyleClass().add(CSS_BUTTON_SELECTED));
-        content.setCenter(nanoleafAurora);
+        //TODO Add dashboard content
     }
 
     @FXML

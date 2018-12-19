@@ -39,8 +39,13 @@ public class RazerServiceImpl implements RazerService {
 
     @Override
     public Mono<Void> uninitialize() {
-        // TODO Auto-generated method stub
-        return null;
+        URI uri = UriHelper.getUri(IP, PORT, PATH);
+        return client
+            .method(HttpMethod.DELETE)
+            .uri(uri)
+            .header("port", "54235")
+            .retrieve()
+            .bodyToMono(Void.class);
     }
 
 }

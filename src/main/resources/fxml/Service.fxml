@@ -2,8 +2,47 @@
 
 <?import javafx.scene.layout.FlowPane?>
 
-<FlowPane xmlns:fx="http://javafx.com/fxml"
-    fx:controller="cz.jaktoviditoka.projectmagellan.controller.ServiceController" fx:id="pane" styleClass="content">
-    <!-- TODO Add Nodes -->
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<FlowPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.ServiceController"
+    fx:id="pane"
+    styleClass="content">
+    <VBox
+        fx:id="nanoleaf"
+        styleClass="tile"
+        spacing="20"
+        alignment="CENTER"
+        onMouseClicked="#nanoleafServiceClicked">
+        <children>
+            <ImageView
+                fitWidth="150"
+                preserveRatio="true"
+                smooth="true">
+                <Image url="image/nanoleaf-logo.png" />
+            </ImageView>
+            <Text text="NANOLEAF" />
+        </children>
+    </VBox>
+    <VBox
+        fx:id="razer"
+        styleClass="tile"
+        spacing="20"
+        alignment="CENTER"
+        onMouseClicked="#razerServiceClicked">
+        <children>
+            <ImageView
+                fitWidth="150"
+                preserveRatio="true"
+                smooth="true">
+                <Image url="image/razer-logo.png" />
+            </ImageView>
+            <Text text="RAZER" />
+        </children>
+    </VBox>
 </FlowPane>
 

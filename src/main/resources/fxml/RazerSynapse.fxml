@@ -1,11 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import com.jfoenix.controls.JFXToggleButton?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-    fx:controller="cz.jaktoviditoka.projectmagellan.controller.RazerSynapseController">
-    <children>
-        <Text fx:id="text" />
-    </children>
-</VBox>
+<FlowPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.RazerSynapseController"
+    styleClass="action-window"
+    orientation="VERTICAL">
+    <VBox
+        styleClass="actionTile"
+        prefWidth="500"
+        spacing="5">
+        <children>
+            <GridPane>
+                <Text
+                    styleClass="actionTileName"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="TOP"
+                    GridPane.hgrow="NEVER"
+                    text="SYNCHRONIZE"
+                    boundsType="VISUAL" />
+            </GridPane>
+            <GridPane>
+                <Text
+                    styleClass="actionTileDescription"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="NEVER"
+                    text="Enable or disable Chroma effects." />
+            </GridPane>
+            <GridPane>
+                <JFXToggleButton
+                    fx:id="initializedToggle"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="CENTER"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="ALWAYS"
+                    onAction="#toggleInitialize" />
+            </GridPane>
+        </children>
+    </VBox>
+</FlowPane>

@@ -3,16 +3,32 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="cz.jaktoviditoka.projectmagellan.controller.MainController"
-    fx:id="root" prefHeight="900" prefWidth="1600">
+<VBox
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.MainController"
+    fx:id="root"
+    prefHeight="900"
+    prefWidth="1600">
     <children>
-        <HBox fx:id="menu" styleClass="menu">
+        <HBox
+            fx:id="menu"
+            styleClass="menu">
             <children>
-                <Button fx:id="dashboardButton" styleClass="menu-button" text="DASHBOARD" onAction="#dashboardContent" />
-                <Button fx:id="devicesButton" styleClass="menu-button" text="DEVICES" onAction="#devicesContent" />
+                <Button
+                    fx:id="dashboardButton"
+                    styleClass="menu-button"
+                    text="DASHBOARD"
+                    onAction="#dashboardContent" />
+                <Button
+                    fx:id="devicesButton"
+                    styleClass="menu-button"
+                    text="DEVICES"
+                    onAction="#devicesContent" />
             </children>
         </HBox>
-        <BorderPane fx:id="content" VBox.vgrow="ALWAYS"/>
+        <BorderPane
+            fx:id="content"
+            VBox.vgrow="ALWAYS" />
     </children>
 </VBox>
 

@@ -1,19 +1,18 @@
 package cz.jaktoviditoka.projectmagellan.controller;
 
-import cz.jaktoviditoka.projectmagellan.razer.chroma.dto.InitializeResponse;
+import com.jfoenix.controls.JFXToggleButton;
 import cz.jaktoviditoka.projectmagellan.razer.chroma.model.RazerSynapseModel;
 import javafx.fxml.FXML;
-import javafx.scene.text.Text;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
 @Component
 public class RazerSynapseController {
 
@@ -21,40 +20,21 @@ public class RazerSynapseController {
     RazerSynapseModel model;
 
     @FXML
-    Text text;
-
-    boolean keepAlive;
+    JFXToggleButton initializedToggle;
 
     @FXML
     private void initialize() {
-        keepAlive = true;
-        model.initialize()
-            .map(InitializeResponse::getSessionid)
-            .map(Integer::valueOf)
-            .subscribe(consumer -> {
-                model.setPort(consumer);
-            }, error -> {
-                text.setText("SYNAPSE NOT INSTALLED");
-            }, () -> {
-                text.setText("SYNAPSE INITIALIZED");
-                model
-                    .ping()
-                    .delaySubscription(Duration.ofSeconds(5))
-                    .repeat(() -> {
-                        return keepAlive;
-                    })
-                    .subscribe(consumer -> {
-                        log.debug("SYNAPSE HEARTBEAT");
-                    });
-            });
+        log.trace("RazerSynapseController initializing...");
+        initializedToggle.selectedProperty().bindBidirectional(model.getInitialized());
+    }
 
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    @FXML
+    private void toggleInitialize() {
+        if (initializedToggle.isSelected()) {
+            model.enableChromaService();
+        } else {
+            model.disableChromaService();
         }
-        keepAlive = false;
     }
 
 }
