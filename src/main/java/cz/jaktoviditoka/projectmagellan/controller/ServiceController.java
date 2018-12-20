@@ -39,7 +39,7 @@ public class ServiceController {
         log.trace("ServiceController initializing...");
         FXMLLoader loader;
 
-        loader = createFxmlLoader("/fxml/NanoleafAurora.fxml");
+        loader = createFxmlLoader("/fxml/Nanoleaf.fxml");
         try {
             nanoleafAurora = loader.load();
         } catch (IOException e) {

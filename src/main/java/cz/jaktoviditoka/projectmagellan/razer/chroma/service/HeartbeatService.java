@@ -5,6 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface HeartbeatService {
 
-    Mono<HeartbeatResponse> heartbeat(int port);
+    Mono<HeartbeatResponse> heartbeat(int targetPort);
 
 }

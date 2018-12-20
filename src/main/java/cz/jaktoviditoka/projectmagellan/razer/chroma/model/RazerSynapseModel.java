@@ -1,10 +1,14 @@
 package cz.jaktoviditoka.projectmagellan.razer.chroma.model;
 
+import cz.jaktoviditoka.projectmagellan.razer.chroma.dto.EffectStaticColor;
+import cz.jaktoviditoka.projectmagellan.razer.chroma.dto.EffectStaticRequest;
 import cz.jaktoviditoka.projectmagellan.razer.chroma.dto.InitializeResponse;
 import cz.jaktoviditoka.projectmagellan.razer.chroma.service.HeartbeatService;
+import cz.jaktoviditoka.projectmagellan.razer.chroma.service.KeyboardService;
 import cz.jaktoviditoka.projectmagellan.razer.chroma.service.RazerService;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.paint.Color;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,10 +36,13 @@ public class RazerSynapseModel {
     BooleanProperty initialized;
 
     @Autowired
+    RazerService razerService;
+
+    @Autowired
     HeartbeatService heartbeatService;
 
     @Autowired
-    RazerService razerService;
+    KeyboardService keyboardService;
 
     boolean keepAlive;
 
@@ -72,6 +79,21 @@ public class RazerSynapseModel {
     public void disableChromaService() {
         keepAlive = false;
         razerService.uninitialize()
+            .log()
+            .subscribeOn(Schedulers.elastic())
+            .subscribe();
+    }
+
+    public void changeKeyboardColor(Color color) {
+        EffectStaticColor staticColor = new EffectStaticColor();
+        int red = Double.valueOf(color.getRed() * 255).intValue();
+        int green = Double.valueOf(color.getGreen() * 255).intValue() << 8;
+        int blue = Double.valueOf(color.getBlue() * 255).intValue() << 16;
+        staticColor.setColor(red | green | blue);
+        log.debug("Applying static color to keyboard: {}", staticColor.getColor());
+        EffectStaticRequest request = new EffectStaticRequest();
+        request.setParam(staticColor);
+        keyboardService.applyEffect(port, request)
             .log()
             .subscribeOn(Schedulers.elastic())
             .subscribe();

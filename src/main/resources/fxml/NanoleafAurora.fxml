@@ -1,52 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Text?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import com.jfoenix.controls.*?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.scene.control.Tab?>
+<?import com.jfoenix.controls.JFXColorPicker?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafAuroraController">
-    <children>
-        <HBox VBox.vgrow="ALWAYS">
-            <children>
-                <AnchorPane prefWidth="400.0">
+<FlowPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.AuroraController"
+    styleClass="action-window"
+    orientation="VERTICAL">
+    <VBox
+        styleClass="actionTile"
+        prefWidth="500"
+        spacing="5">
+        <children>
+            <GridPane>
+                <Text
+                    styleClass="actionTileName"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="TOP"
+                    GridPane.hgrow="NEVER"
+                    text="POWER"
+                    boundsType="VISUAL" />
+            </GridPane>
+            <GridPane>
+                <Text
+                    styleClass="actionTileDescription"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="NEVER"
+                    text="Changes device state between ON and OFF." />
+            </GridPane>
+            <GridPane>
+                <JFXToggleButton
+                    fx:id="powerToggle"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="CENTER"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="ALWAYS"
+                    onAction="#togglePower" />
+            </GridPane>
+        </children>
+    </VBox>
+    <VBox
+        styleClass="actionTile"
+        prefWidth="500"
+        spacing="5">
+        <children>
+            <GridPane>
+                <Text
+                    styleClass="actionTileName"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="TOP"
+                    GridPane.hgrow="NEVER"
+                    text="BRIGHTNESS"
+                    boundsType="VISUAL" />
+            </GridPane>
+            <GridPane>
+                <Text
+                    styleClass="actionTileDescription"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="NEVER"
+                    text="Changes device brightness." />
+            </GridPane>
+            <GridPane>
+                <JFXSlider
+                    fx:id="brightnessSlider"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="CENTER"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="ALWAYS"
+                    min="0"
+                    max="100"
+                    showTickLabels="true"
+                    majorTickUnit="100"
+                    onMouseReleased="#changeBrightness">
+                    <padding>
+                        <Insets
+                            top="20"
+                            right="20"
+                            bottom="20"
+                            left="20" />
+                    </padding>
+                </JFXSlider>
+            </GridPane>
+        </children>
+    </VBox>
+    <JFXTabPane fx:id="colorModeTabPane">
+        <tabs>
+            <Tab
+                fx:id="basicTab"
+                text="BASIC">
+                <VBox
+                    styleClass="actionTile"
+                    prefWidth="500"
+                    spacing="5">
                     <children>
-                        <VBox fx:id="leftWindow" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <children>
-                                <Button fx:id="discoverButton" />
-                                <VBox fx:id="pairedDevices" />
-                            </children>
-                        </VBox>
+                        <GridPane>
+                            <Text
+                                styleClass="actionTileName"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="0"
+                                GridPane.halignment="LEFT"
+                                GridPane.valignment="TOP"
+                                GridPane.hgrow="NEVER"
+                                text="COLOR TEMPERATURE"
+                                boundsType="VISUAL" />
+                        </GridPane>
+                        <GridPane>
+                            <Text
+                                styleClass="actionTileDescription"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="0"
+                                GridPane.halignment="LEFT"
+                                GridPane.valignment="CENTER"
+                                GridPane.hgrow="NEVER"
+                                text="Changes device color temperature." />
+                        </GridPane>
+                        <GridPane>
+                            <JFXSlider
+                                fx:id="colorTempSlider"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="0"
+                                GridPane.halignment="CENTER"
+                                GridPane.valignment="CENTER"
+                                GridPane.hgrow="ALWAYS"
+                                min="1200"
+                                max="6500"
+                                showTickLabels="true"
+                                majorTickUnit="6500"
+                                onMouseReleased="#changeColorTemperature">
+                                <padding>
+                                    <Insets
+                                        top="20"
+                                        right="20"
+                                        bottom="20"
+                                        left="20" />
+                                </padding>
+                            </JFXSlider>
+                        </GridPane>
                     </children>
-                </AnchorPane>
-                <AnchorPane HBox.hgrow="ALWAYS">
+                </VBox>
+            </Tab>
+            <Tab
+                fx:id="colorTab"
+                text="COLOR">
+                <VBox
+                    styleClass="actionTile"
+                    prefWidth="500"
+                    spacing="5">
                     <children>
-                        <ScrollPane fx:id="actionWindowScroll" AnchorPane.bottomAnchor="0.0"
-                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <GridPane>
+                            <Text
+                                styleClass="actionTileName"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="0"
+                                GridPane.halignment="LEFT"
+                                GridPane.valignment="TOP"
+                                GridPane.hgrow="NEVER"
+                                text="COLOR"
+                                boundsType="VISUAL" />
+                        </GridPane>
+                        <GridPane>
+                            <Text
+                                styleClass="actionTileDescription"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="0"
+                                GridPane.halignment="LEFT"
+                                GridPane.valignment="CENTER"
+                                GridPane.hgrow="NEVER"
+                                text="Changes device color." />
+                        </GridPane>
+                        <GridPane>
+                            <JFXColorPicker
+                                fx:id="colorPicker"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="0"
+                                GridPane.halignment="CENTER"
+                                GridPane.valignment="CENTER"
+                                GridPane.hgrow="ALWAYS"
+                                onAction="#changeColor" />
+                        </GridPane>
                     </children>
-                </AnchorPane>
-            </children>
-        </HBox>
-        <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
-            <children>
-                <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
-                    <font>
-                        <Font size="11.0" fx:id="x3" />
-                    </font>
-                    <textFill>
-                        <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-                    </textFill>
-                </Label>
-                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-                <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
-            </children>
-            <padding>
-                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-            </padding>
-        </HBox>
-    </children>
-</VBox>
+                </VBox>
+            </Tab>
+            <Tab
+                fx:id="effectTab"
+                text="EFFECT" />
+        </tabs>
+    </JFXTabPane>
+</FlowPane>
+

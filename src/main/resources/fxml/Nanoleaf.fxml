@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<VBox
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="cz.jaktoviditoka.projectmagellan.controller.NanoleafController">
+    <children>
+        <HBox VBox.vgrow="ALWAYS">
+            <children>
+                <AnchorPane prefWidth="400.0">
+                    <children>
+                        <VBox
+                            fx:id="leftWindow"
+                            styleClass="left-window"
+                            AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="0.0"
+                            alignment="TOP_CENTER"
+                            fillWidth="true">
+                            <children>
+                                <Button
+                                    fx:id="discoverButton"
+                                    styleClass="discover-button"
+                                    text="DISCOVER"
+                                    onAction="#discover" />
+                                <VBox fx:id="pairedDevices" />
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+                <AnchorPane HBox.hgrow="ALWAYS">
+                    <children>
+                        <ScrollPane
+                            fx:id="actionWindowScroll"
+                            styleClass="action-window-scroll"
+                            AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="0.0"
+                            fitToHeight="true"
+                            fitToWidth="true" />
+                    </children>
+                </AnchorPane>
+            </children>
+        </HBox>
+    </children>
+</VBox>

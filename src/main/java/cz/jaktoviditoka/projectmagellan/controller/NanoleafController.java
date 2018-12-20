@@ -12,7 +12,7 @@ import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Orientation;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -29,6 +29,7 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -41,7 +42,10 @@ import java.util.Set;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Component
-public class NanoleafAuroraController {
+public class NanoleafController {
+
+    @Autowired
+    ApplicationContext context;
 
     ObservableSet<Device> devices;
 
@@ -51,7 +55,7 @@ public class NanoleafAuroraController {
     @Autowired
     PerformanceClock clock;
 
-    Set<DeviceController> deviceControllers;
+    Set<AuroraController> deviceControllers;
 
     @FXML
     VBox leftWindow;
@@ -65,9 +69,7 @@ public class NanoleafAuroraController {
     @FXML
     ScrollPane actionWindowScroll;
 
-    FlowPane actionWindowDiscover;
-    
-    DeviceController activeDeviceController;
+    AuroraController activeDeviceController;
 
     static final String IMAGE_NANOLEAF_AURORA = "image/nanoleaf-aurora-transparent-hires.png";
 
@@ -76,34 +78,25 @@ public class NanoleafAuroraController {
         log.debug("NanoleafAuroraController.initialize() – start: {}", clock.check());
         deviceControllers = new HashSet<>();
 
-        leftWindow.getStyleClass().add("left-window");
-        leftWindow.setAlignment(Pos.TOP_CENTER);
-        leftWindow.setFillWidth(true);
-
-        discoverButton.setText("DISCOVER");
-        discoverButton.getStyleClass().add("discover-button");
-        discoverButton.setOnAction(event -> {
-            discover();
-        });
-
-        actionWindowScroll.getStyleClass().add("action-window-scroll");
-        actionWindowScroll.setFitToHeight(true);
-        actionWindowScroll.setFitToWidth(true);
-
-        actionWindowDiscover = new FlowPane();
-        actionWindowDiscover.setOrientation(Orientation.HORIZONTAL);
-        actionWindowDiscover.getStyleClass().add("action-window");
-
         devices = FXCollections.observableSet(new HashSet<>());
         SetChangeListener<Device> devicesListener = change -> {
             if (change.wasAdded()) {
-                DeviceController deviceController = createDeviceController(change.getElementAdded());
-                FlowPane window = createActiveWindowControl(deviceController);
-                PairedDeviceView deviceView = createPiredDeviceView(deviceController.getDevice(), window,
-                        deviceController);
-                Platform.runLater(() -> {
-                    pairedDevices.getChildren().add(deviceView);
-                });
+                FXMLLoader loader = createFxmlLoader("/fxml/NanoleafAurora.fxml");
+                FlowPane window;
+                try {
+                    window = loader.load();
+                    AuroraController deviceController = loader.getController();
+                    deviceController.setDevice(change.getElementAdded());
+                    deviceController.refresh();
+                    PairedDeviceView deviceView = createPiredDeviceView(deviceController.getDevice(), window,
+                            deviceController);
+                    Platform.runLater(() -> {
+                        pairedDevices.getChildren().add(deviceView);
+                    });
+                } catch (IOException e) {
+                    log.error("Failed to load FXML.", e);
+                    Platform.exit();
+                }
             }
         };
         devices.addListener(devicesListener);
@@ -113,7 +106,7 @@ public class NanoleafAuroraController {
 
     //@Scheduled(initialDelay = 10000, fixedRate = 5000)
     public void refreshState() {
-        Optional<DeviceController> deviceControllerOpt = deviceControllers.stream()
+        Optional<AuroraController> deviceControllerOpt = deviceControllers.stream()
             .filter(e -> e.equals(activeDeviceController))
             .findFirst();
         if (deviceControllerOpt.isPresent()) {
@@ -121,26 +114,7 @@ public class NanoleafAuroraController {
         }
     }
 
-    private DeviceController createDeviceController(Device device) {
-        DeviceController deviceController = new DeviceController(deviceModel, device);
-        deviceController.init();
-        deviceController.refresh();
-        return deviceController;
-    }
-
-    private FlowPane createActiveWindowControl(DeviceController deviceController) {
-        FlowPane window = new FlowPane();
-        window.setOrientation(Orientation.VERTICAL);
-        window.getStyleClass().add("action-window");
-
-        window.getChildren().add(deviceController.getPowerTile());
-        window.getChildren().add(deviceController.getBrightnessTile());
-        window.getChildren().add(deviceController.getColorModeTab());
-
-        return window;
-    }
-
-    private PairedDeviceView createPiredDeviceView(Device device, FlowPane window, DeviceController deviceController) {
+    private PairedDeviceView createPiredDeviceView(Device device, FlowPane window, AuroraController deviceController) {
         PairedDeviceView view = new PairedDeviceView();
 
         EventHandler<MouseEvent> event = e -> {
@@ -273,45 +247,51 @@ public class NanoleafAuroraController {
         return view;
     }
 
+    @FXML
     private void discover() {
-        JFXSpinner spinner = new JFXSpinner();
-        spinner.getStyleClass().add("spinner");
+        FXMLLoader loader = createFxmlLoader("/fxml/NanoleafDiscover.fxml");
+        FlowPane actionWindowDiscover;
+        try {
+            JFXSpinner spinner = new JFXSpinner();
+            spinner.getStyleClass().add("spinner");
 
-        actionWindowDiscover.getChildren().clear();
-        actionWindowDiscover.getChildren().add(spinner);
-        actionWindowDiscover.setOrientation(Orientation.HORIZONTAL);
-        actionWindowDiscover.setAlignment(Pos.CENTER);
-        actionWindowScroll.setContent(actionWindowDiscover);
-        discoverButton.setDisable(true);
+            actionWindowDiscover = loader.load();
+            actionWindowDiscover.getChildren().clear();
+            actionWindowDiscover.getChildren().add(spinner);
+            actionWindowScroll.setContent(actionWindowDiscover);
+            discoverButton.setDisable(true);
+            ObservableSet<Device> newDevices = FXCollections.observableSet(new HashSet<>());
+            SetChangeListener<Device> newDevicesListener = change -> {
+                if (change.wasAdded()) {
+                    log.debug("Added device to discover list.");
 
-        ObservableSet<Device> newDevices = FXCollections.observableSet(new HashSet<>());
-        SetChangeListener<Device> newDevicesListener = change -> {
-            if (change.wasAdded()) {
-                log.debug("Added device to discover list.");
+                    DiscoveredDeviceView view = createDiscoveredDeviceView(change.getElementAdded());
+                    Platform.runLater(() -> {
+                        actionWindowDiscover.setAlignment(Pos.TOP_LEFT);
+                        actionWindowDiscover.getChildren().remove(spinner);
+                        actionWindowDiscover.getChildren().add(view);
+                    });
 
-                DiscoveredDeviceView view = createDiscoveredDeviceView(change.getElementAdded());
-                Platform.runLater(() -> {
-                    actionWindowDiscover.setAlignment(Pos.TOP_LEFT);
-                    actionWindowDiscover.getChildren().remove(spinner);
-                    actionWindowDiscover.getChildren().add(view);
+                }
+            };
+            newDevices.addListener(newDevicesListener);
+            deviceModel.discover()
+                .log()
+                .subscribeOn(Schedulers.elastic())
+                .subscribe(device -> {
+                    newDevices.add(device);
+                }, error -> {
+                    log.error("Error during SSDP discovery.", error);
+                }, () -> {
+                    Platform.runLater(() -> {
+                        discoverButton.setDisable(false);
+                    });
                 });
+        } catch (IOException e) {
+            log.error("Failed to load FXML.", e);
+            Platform.exit();
+        }
 
-            }
-        };
-        newDevices.addListener(newDevicesListener);
-
-        deviceModel.discover()
-            .log()
-            .subscribeOn(Schedulers.elastic())
-            .subscribe(device -> {
-                newDevices.add(device);
-            }, error -> {
-                log.error("Error during SSDP discovery.", error);
-            }, () -> {
-                Platform.runLater(() -> {
-                    discoverButton.setDisable(false);
-                });
-            });
     }
 
     private Mono<Boolean> pair(Device device) {
@@ -320,6 +300,13 @@ public class NanoleafAuroraController {
 
     private Mono<Boolean> unpair(Device device) {
         return deviceModel.unpair(device);
+    }
+
+    private FXMLLoader createFxmlLoader(String location) {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setControllerFactory(context::getBean);
+        fxmlLoader.setLocation(getClass().getResource(location));
+        return fxmlLoader;
     }
 
 }

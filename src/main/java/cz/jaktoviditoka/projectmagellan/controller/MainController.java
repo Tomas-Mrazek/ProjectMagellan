@@ -62,7 +62,7 @@ public class MainController {
     }
 
     @FXML
-    public void dashboardContent() {
+    private void dashboardContent() {
         menu.getChildren().stream()
             .forEach(el -> el.getStyleClass().remove(CSS_BUTTON_SELECTED));
         menu.getChildren().stream()
@@ -73,7 +73,7 @@ public class MainController {
     }
 
     @FXML
-    public void devicesContent() {
+    private void devicesContent() {
         serviceController.showServices();
         menu.getChildren().stream()
             .forEach(el -> el.getStyleClass().remove(CSS_BUTTON_SELECTED));
