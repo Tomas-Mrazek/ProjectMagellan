@@ -3,6 +3,7 @@ package cz.jaktoviditoka.projectmagellan.controller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -41,10 +42,16 @@ public class MainController {
     Button devicesButton;
 
     @FXML
+    Button groupsButton;
+
+    @FXML
     BorderPane content;
 
-    FlowPane service;
+    FlowPane serviceRoot;
     ServiceController serviceController;
+
+    VBox groupsRoot;
+    GroupsController groupsController;
 
     static final String CSS_BUTTON_SELECTED = "menu-button-selected";
 
@@ -52,7 +59,7 @@ public class MainController {
     private void initialize() {
         FXMLLoader serviceLoader = createFxmlLoader("/fxml/Service.fxml");
         try {
-            service = serviceLoader.load();
+            serviceRoot = serviceLoader.load();
             serviceController = serviceLoader.getController();
         } catch (IOException e) {
             log.error("Failed to load FXML.", e);
@@ -74,14 +81,12 @@ public class MainController {
 
     @FXML
     private void devicesContent() {
-        serviceController.showServices();
-        menu.getChildren().stream()
-            .forEach(el -> el.getStyleClass().remove(CSS_BUTTON_SELECTED));
-        menu.getChildren().stream()
-            .filter(el -> el.equals(devicesButton))
-            .findAny()
-            .ifPresent(el -> el.getStyleClass().add(CSS_BUTTON_SELECTED));
-        content.setCenter(service);
+        switchContent(serviceRoot, devicesButton);
+    }
+
+    @FXML
+    private void groupsContent() {
+        switchContent(groupsRoot, groupsButton);
     }
 
     private FXMLLoader createFxmlLoader(String location) {
@@ -89,6 +94,16 @@ public class MainController {
         fxmlLoader.setControllerFactory(context::getBean);
         fxmlLoader.setLocation(getClass().getResource(location));
         return fxmlLoader;
+    }
+
+    private void switchContent(Node root, Button button) {
+        menu.getChildren().stream()
+            .forEach(el -> el.getStyleClass().remove(CSS_BUTTON_SELECTED));
+        menu.getChildren().stream()
+            .filter(el -> el.equals(button))
+            .findAny()
+            .ifPresent(el -> el.getStyleClass().add(CSS_BUTTON_SELECTED));
+        content.setCenter(root);
     }
 
 }

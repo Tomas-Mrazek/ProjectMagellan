@@ -1,6 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.Effect;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.EffectsNameRequest;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.WriteRequest;
@@ -9,12 +9,12 @@ import reactor.core.publisher.Mono;
 
 public interface EffectsService {
 
-    Mono<String> getCurrentEffect(Device device);
+    Mono<String> getCurrentEffect(NanoleafAuroraDevice device);
 
-    Mono<Void> setCurrentEffect(Device device, EffectsNameRequest effectName);
+    Mono<Void> setCurrentEffect(NanoleafAuroraDevice device, EffectsNameRequest effectName);
 
-    Flux<String> getEffects(Device device);
+    Flux<String> getEffects(NanoleafAuroraDevice device);
 
-    Mono<Effect> createEffect(Device device, WriteRequest effect);
+    Mono<Effect> createEffect(NanoleafAuroraDevice device, WriteRequest effect);
 
 }

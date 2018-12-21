@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
@@ -79,13 +78,91 @@
             </GridPane>
             <GridPane>
                 <JFXColorPicker
-                    fx:id="colorPicker"
+                    fx:id="keyboardColorPicker"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="0"
                     GridPane.halignment="CENTER"
                     GridPane.valignment="CENTER"
                     GridPane.hgrow="ALWAYS"
                     onAction="#changeKeyboardColor">
+                </JFXColorPicker>
+            </GridPane>
+        </children>
+    </VBox>
+    <VBox
+        styleClass="actionTile"
+        prefWidth="500"
+        spacing="5">
+        <children>
+            <GridPane>
+                <Text
+                    styleClass="actionTileName"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="TOP"
+                    GridPane.hgrow="NEVER"
+                    text="MOUSE"
+                    boundsType="VISUAL" />
+            </GridPane>
+            <GridPane>
+                <Text
+                    styleClass="actionTileDescription"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="NEVER"
+                    text="Set a static color for your mouse." />
+            </GridPane>
+            <GridPane>
+                <JFXColorPicker
+                    fx:id="mouseColorPicker"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="CENTER"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="ALWAYS"
+                    onAction="#changeMouseColor">
+                </JFXColorPicker>
+            </GridPane>
+        </children>
+    </VBox>
+    <VBox
+        styleClass="actionTile"
+        prefWidth="500"
+        spacing="5">
+        <children>
+            <GridPane>
+                <Text
+                    styleClass="actionTileName"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="TOP"
+                    GridPane.hgrow="NEVER"
+                    text="CHROMA LINK"
+                    boundsType="VISUAL" />
+            </GridPane>
+            <GridPane>
+                <Text
+                    styleClass="actionTileDescription"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="LEFT"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="NEVER"
+                    text="Set a static color for your Chroma Link device." />
+            </GridPane>
+            <GridPane>
+                <JFXColorPicker
+                    fx:id="chromaLinkColorPicker"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"
+                    GridPane.halignment="CENTER"
+                    GridPane.valignment="CENTER"
+                    GridPane.hgrow="ALWAYS"
+                    onAction="#changeChromaLinkColor">
                 </JFXColorPicker>
             </GridPane>
         </children>

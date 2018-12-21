@@ -1,6 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.impl;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.Effect;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.EffectsNameRequest;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.effects.WriteRequest;
@@ -22,7 +22,7 @@ public class EffectsServiceImpl implements EffectsService {
     private static final String EFFECTS_LIST = "/effects/effectsList";
 
     @Override
-    public Mono<String> getCurrentEffect(Device device) {
+    public Mono<String> getCurrentEffect(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_NAME);
         return WebClient.create()
@@ -33,7 +33,7 @@ public class EffectsServiceImpl implements EffectsService {
     }
 
     @Override
-    public Mono<Void> setCurrentEffect(Device device, EffectsNameRequest effectName) {
+    public Mono<Void> setCurrentEffect(NanoleafAuroraDevice device, EffectsNameRequest effectName) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_NAME);
         return WebClient.create()
@@ -44,7 +44,7 @@ public class EffectsServiceImpl implements EffectsService {
     }
 
     @Override
-    public Flux<String> getEffects(Device device) {
+    public Flux<String> getEffects(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_LIST);
         return WebClient.create()
@@ -55,7 +55,7 @@ public class EffectsServiceImpl implements EffectsService {
     }
 
     @Override
-    public Mono<Effect> createEffect(Device device, WriteRequest effect) {
+    public Mono<Effect> createEffect(NanoleafAuroraDevice device, WriteRequest effect) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + EFFECTS_NAME);
         return WebClient.create()

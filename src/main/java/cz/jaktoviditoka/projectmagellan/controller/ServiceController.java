@@ -13,6 +13,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -54,6 +56,7 @@ public class ServiceController {
             log.error("Failed to load FXML.", e);
             Platform.exit();
         }
+        log.trace("ServiceController initialized.");
     }
 
     @FXML
@@ -64,9 +67,11 @@ public class ServiceController {
 
     @FXML
     private void razerServiceClicked() {
+        Instant start = Instant.now();
         pane.getChildren().clear();
         pane.getChildren().add(razerSynapse);
-
+        Instant finish = Instant.now();
+        log.trace("razerServiceClicked – {}", Duration.between(start, finish).toMillis());
     }
 
     public void showServices() {

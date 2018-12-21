@@ -1,6 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.impl;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.InfoResponse;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.InfoService;
 import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
@@ -21,7 +21,7 @@ public class InfoServiceImpl implements InfoService {
     WebClient client;
 
     @Override
-    public Mono<InfoResponse> getInfo(Device device) {
+    public Mono<InfoResponse> getInfo(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken());
         return client

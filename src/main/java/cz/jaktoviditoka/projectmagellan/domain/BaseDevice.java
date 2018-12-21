@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
-import java.net.InetAddress;
 import java.util.UUID;
 
 @Data
@@ -16,8 +15,7 @@ public abstract class BaseDevice {
     String name;
     @EqualsAndHashCode.Exclude
     String displayName;
-    InetAddress ip;
-    int port;
+    //TODO Set of Effects
 
     @JsonIgnore
     public String getResolvedName() {

@@ -1,31 +1,31 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import reactor.core.publisher.Mono;
 
 public interface StateService {
 
-    Mono<OnResponse> isOn(Device device);
+    Mono<OnResponse> isOn(NanoleafAuroraDevice device);
 
-    Mono<Void> setOn(Device device, OnRequest on);
+    Mono<Void> setOn(NanoleafAuroraDevice device, OnRequest on);
 
-    Mono<BrightnessResponse> getBrightness(Device device);
+    Mono<BrightnessResponse> getBrightness(NanoleafAuroraDevice device);
 
-    Mono<Void> setBrightness(Device device, BrightnessRequest brightness);
+    Mono<Void> setBrightness(NanoleafAuroraDevice device, BrightnessRequest brightness);
 
-    Mono<HueResponse> getHue(Device device);
+    Mono<HueResponse> getHue(NanoleafAuroraDevice device);
 
-    Mono<Void> setHue(Device device, HueRequest hue);
+    Mono<Void> setHue(NanoleafAuroraDevice device, HueRequest hue);
 
-    Mono<SaturationResponse> getSaturation(Device device);
+    Mono<SaturationResponse> getSaturation(NanoleafAuroraDevice device);
 
-    Mono<Void> setSaturation(Device device, SaturationRequest saturation);
+    Mono<Void> setSaturation(NanoleafAuroraDevice device, SaturationRequest saturation);
 
-    Mono<ColorTemperatureResponse> getColorTemperature(Device device);
+    Mono<ColorTemperatureResponse> getColorTemperature(NanoleafAuroraDevice device);
 
-    Mono<Void> setColorTemperature(Device device, ColorTemperatureRequest colorTemperature);
+    Mono<Void> setColorTemperature(NanoleafAuroraDevice device, ColorTemperatureRequest colorTemperature);
 
-    Mono<ColorMode> getColorMode(Device device);
+    Mono<ColorMode> getColorMode(NanoleafAuroraDevice device);
 
 }

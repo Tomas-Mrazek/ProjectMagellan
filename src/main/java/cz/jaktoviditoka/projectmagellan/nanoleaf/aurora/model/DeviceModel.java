@@ -1,7 +1,7 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model;
 
 import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.InfoResponse;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
@@ -33,7 +33,7 @@ import javax.annotation.PostConstruct;
 public class DeviceModel {
 
     @Getter
-    Set<Device> devices;
+    Set<NanoleafAuroraDevice> devices;
 
     AppSettings appSettings;
     SSDPClient ssdpclient;
@@ -60,7 +60,7 @@ public class DeviceModel {
         appSettings.saveSettings();
     }
 
-    public Flux<Device> discover() {
+    public Flux<NanoleafAuroraDevice> discover() {
         try {
             return ssdpclient.mSearch(BaseDeviceType.NANOLEAF_AURORA);
         } catch (UnknownHostException e) {
@@ -68,7 +68,7 @@ public class DeviceModel {
         }
     }
 
-    public Mono<Boolean> pair(Device device) {
+    public Mono<Boolean> pair(NanoleafAuroraDevice device) {
         if (StringUtils.isNotEmpty(device.getAuthToken())) {
             log.warn("Device is already paired.");
             return Mono.just(false).log();
@@ -98,7 +98,7 @@ public class DeviceModel {
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<Boolean> unpair(Device device) {
+    public Mono<Boolean> unpair(NanoleafAuroraDevice device) {
         authService.deleteUser(device).block();
 
         appSettings.getDevices().remove(device);
@@ -111,29 +111,29 @@ public class DeviceModel {
         return Mono.just(true);
     }
 
-    public Mono<InfoResponse> getInfo(Device device) {
+    public Mono<InfoResponse> getInfo(NanoleafAuroraDevice device) {
         return infoService.getInfo(device)
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<OnResponse> isOn(Device device) {
+    public Mono<OnResponse> isOn(NanoleafAuroraDevice device) {
         return stateService.isOn(device)
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<Void> setOn(Device device, boolean power) {
+    public Mono<Void> setOn(NanoleafAuroraDevice device, boolean power) {
         On on = new On(power);
         OnRequest request = new OnRequest(on);
         return stateService.setOn(device, request)
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<BrightnessResponse> getBrightness(Device device) {
+    public Mono<BrightnessResponse> getBrightness(NanoleafAuroraDevice device) {
         return stateService.getBrightness(device)
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<Void> setBrightness(Device device, Number brightness) {
+    public Mono<Void> setBrightness(NanoleafAuroraDevice device, Number brightness) {
         BrightnessValue brightnessValue = new BrightnessValue();
         brightnessValue.setValue(brightness.intValue());
         BrightnessRequest request = new BrightnessRequest(brightnessValue);
@@ -141,12 +141,12 @@ public class DeviceModel {
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<HueResponse> getHue(Device device) {
+    public Mono<HueResponse> getHue(NanoleafAuroraDevice device) {
         return stateService.getHue(device)
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<Void> setHue(Device device, Number hue) {
+    public Mono<Void> setHue(NanoleafAuroraDevice device, Number hue) {
         HueValue hueValue = new HueValue();
         hueValue.setValue(hue.intValue());
         HueRequest request = new HueRequest(hueValue);
@@ -154,12 +154,12 @@ public class DeviceModel {
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<SaturationResponse> getSaturation(Device device) {
+    public Mono<SaturationResponse> getSaturation(NanoleafAuroraDevice device) {
         return stateService.getSaturation(device)
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<Void> setSaturation(Device device, Number saturation) {
+    public Mono<Void> setSaturation(NanoleafAuroraDevice device, Number saturation) {
         SaturationValue saturationValue = new SaturationValue();
         saturationValue.setValue(saturation.intValue());
         SaturationRequest request = new SaturationRequest(saturationValue);
@@ -167,12 +167,12 @@ public class DeviceModel {
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<ColorTemperatureResponse> getColorTemperature(Device device) {
+    public Mono<ColorTemperatureResponse> getColorTemperature(NanoleafAuroraDevice device) {
         return stateService.getColorTemperature(device)
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<Void> setColorTemperature(Device device, Number colorTemperature) {
+    public Mono<Void> setColorTemperature(NanoleafAuroraDevice device, Number colorTemperature) {
         ColorTemperatureValue colorTemperatureValue = new ColorTemperatureValue();
         colorTemperatureValue.setValue(colorTemperature.intValue());
         ColorTemperatureRequest colorTemperatureRequest = new ColorTemperatureRequest(colorTemperatureValue);
@@ -180,7 +180,7 @@ public class DeviceModel {
             .subscribeOn(Schedulers.elastic());
     }
 
-    public Mono<ColorMode> getColorMode(Device device) {
+    public Mono<ColorMode> getColorMode(NanoleafAuroraDevice device) {
         return stateService.getColorMode(device)
             .subscribeOn(Schedulers.elastic());
     }

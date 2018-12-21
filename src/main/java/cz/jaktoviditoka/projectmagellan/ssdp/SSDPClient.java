@@ -1,7 +1,7 @@
 package cz.jaktoviditoka.projectmagellan.ssdp;
 
 import cz.jaktoviditoka.projectmagellan.domain.BaseDeviceType;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class SSDPClient {
 
     static final String NANOLEAF_AURORA = "nanoleaf_aurora:light";
 
-    public Flux<Device> mSearch(BaseDeviceType deviceType) throws UnknownHostException {
+    public Flux<NanoleafAuroraDevice> mSearch(BaseDeviceType deviceType) throws UnknownHostException {
 
         StringBuilder request = new StringBuilder();
         switch (deviceType) {
@@ -73,7 +73,7 @@ public class SSDPClient {
         return supported;
     }
 
-    private Device transform(String received) {
+    private NanoleafAuroraDevice transform(String received) {
         try {
             if (received.contains(NANOLEAF_AURORA)) {
                 int indexLocation = received.indexOf("Location:") + 10;
@@ -81,7 +81,7 @@ public class SSDPClient {
                 int indexUUID = received.indexOf("USN: uuid:") + 10;
                 String urlString = received.substring(indexLocation, received.indexOf("\r\n", indexLocation));
                 URL url = new URL(urlString);
-                Device device = new Device(BaseDeviceType.NANOLEAF_AURORA);
+                NanoleafAuroraDevice device = new NanoleafAuroraDevice(BaseDeviceType.NANOLEAF_AURORA);
                 device.setUuid(UUID.fromString(received.substring(indexUUID, received.indexOf("\r\n", indexUUID))));
                 device.setName(received.substring(indexName, received.indexOf("\r\n", indexName)));
                 device.setIp(InetAddress.getByName(url.getHost()));

@@ -4,7 +4,7 @@ import com.jfoenix.controls.JFXColorPicker;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXToggleButton;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -29,7 +29,7 @@ public class AuroraController {
 
     @Getter
     @Setter
-    Device device;
+    NanoleafAuroraDevice device;
 
     @FXML
     JFXToggleButton powerToggle;

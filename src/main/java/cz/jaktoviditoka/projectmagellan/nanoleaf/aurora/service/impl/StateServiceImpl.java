@@ -1,6 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.impl;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.state.*;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.StateService;
 import cz.jaktoviditoka.projectmagellan.utils.UriHelper;
@@ -27,7 +27,7 @@ public class StateServiceImpl implements StateService {
     private static final String COLOR_MODE = "/state/colorMode";
 
     @Override
-    public Mono<OnResponse> isOn(Device device) {
+    public Mono<OnResponse> isOn(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + ON);
         return WebClient.create()
@@ -38,7 +38,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<Void> setOn(Device device, OnRequest on) {
+    public Mono<Void> setOn(NanoleafAuroraDevice device, OnRequest on) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
         return WebClient.create()
@@ -50,7 +50,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<BrightnessResponse> getBrightness(Device device) {
+    public Mono<BrightnessResponse> getBrightness(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + BRIGHTNESS);
         return WebClient.create()
@@ -61,7 +61,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<Void> setBrightness(Device device, BrightnessRequest brightness) {
+    public Mono<Void> setBrightness(NanoleafAuroraDevice device, BrightnessRequest brightness) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
         return WebClient.create()
@@ -73,7 +73,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<HueResponse> getHue(Device device) {
+    public Mono<HueResponse> getHue(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + HUE);
         return WebClient.create()
@@ -84,7 +84,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<Void> setHue(Device device, HueRequest hue) {
+    public Mono<Void> setHue(NanoleafAuroraDevice device, HueRequest hue) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
         return WebClient.create()
@@ -96,7 +96,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<SaturationResponse> getSaturation(Device device) {
+    public Mono<SaturationResponse> getSaturation(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + SATURATION);
         return WebClient.create()
@@ -107,7 +107,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<Void> setSaturation(Device device, SaturationRequest saturation) {
+    public Mono<Void> setSaturation(NanoleafAuroraDevice device, SaturationRequest saturation) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
         return WebClient.create()
@@ -119,7 +119,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<ColorTemperatureResponse> getColorTemperature(Device device) {
+    public Mono<ColorTemperatureResponse> getColorTemperature(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + COLOR_TEMPERATURE);
         return WebClient.create()
@@ -130,7 +130,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<Void> setColorTemperature(Device device, ColorTemperatureRequest colorTemperature) {
+    public Mono<Void> setColorTemperature(NanoleafAuroraDevice device, ColorTemperatureRequest colorTemperature) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + STATE);
         return WebClient.create()
@@ -142,7 +142,7 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public Mono<ColorMode> getColorMode(Device device) {
+    public Mono<ColorMode> getColorMode(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken() + COLOR_MODE);
         return WebClient.create()

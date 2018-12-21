@@ -2,7 +2,7 @@ package cz.jaktoviditoka.projectmagellan.settings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -56,7 +55,7 @@ public class AppSettings {
         settings.setDevices(new HashSet<>());
     }
 
-    public Set<Device> getDevices() {
+    public Set<NanoleafAuroraDevice> getDevices() {
         if (settings.getDevices() == null) {
             settings.setDevices(new HashSet<>());
         }

@@ -26,6 +26,11 @@
                     styleClass="menu-button"
                     text="DEVICES"
                     onAction="#devicesContent" />
+                <Button
+                    fx:id="groupsButton"
+                    styleClass="menu-button"
+                    text="GROUPS"
+                    onAction="#groupsContent" />
             </children>
         </HBox>
         <BorderPane

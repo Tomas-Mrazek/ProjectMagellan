@@ -1,6 +1,6 @@
 package cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.impl;
 
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.dto.auth.Authorization;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.exception.NotAuthorizedException;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.service.AuthorizationService;
@@ -26,7 +26,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     WebClient client;
 
     @Override
-    public Mono<Authorization> addUser(Device device) {
+    public Mono<Authorization> addUser(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + NEW);
         return client
@@ -43,7 +43,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public Mono<Void> deleteUser(Device device) {
+    public Mono<Void> deleteUser(NanoleafAuroraDevice device) {
         URI uri = UriHelper.getUri(device.getIp().getHostAddress(), device.getPort(),
                 BASE_URL + device.getAuthToken());
         return client

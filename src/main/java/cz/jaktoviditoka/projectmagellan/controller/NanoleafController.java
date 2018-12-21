@@ -1,11 +1,10 @@
 package cz.jaktoviditoka.projectmagellan.controller;
 
 import com.jfoenix.controls.JFXSpinner;
+import cz.jaktoviditoka.projectmagellan.domain.NanoleafAuroraDevice;
 import cz.jaktoviditoka.projectmagellan.gui.view.DiscoveredDeviceView;
 import cz.jaktoviditoka.projectmagellan.gui.view.PairedDeviceView;
-import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.domain.Device;
 import cz.jaktoviditoka.projectmagellan.nanoleaf.aurora.model.DeviceModel;
-import cz.jaktoviditoka.projectmagellan.utils.PerformanceClock;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -47,13 +46,10 @@ public class NanoleafController {
     @Autowired
     ApplicationContext context;
 
-    ObservableSet<Device> devices;
+    ObservableSet<NanoleafAuroraDevice> devices;
 
     @Autowired
     DeviceModel deviceModel;
-
-    @Autowired
-    PerformanceClock clock;
 
     Set<AuroraController> deviceControllers;
 
@@ -75,11 +71,10 @@ public class NanoleafController {
 
     @FXML
     private void initialize() {
-        log.debug("NanoleafAuroraController.initialize() – start: {}", clock.check());
         deviceControllers = new HashSet<>();
 
         devices = FXCollections.observableSet(new HashSet<>());
-        SetChangeListener<Device> devicesListener = change -> {
+        SetChangeListener<NanoleafAuroraDevice> devicesListener = change -> {
             if (change.wasAdded()) {
                 FXMLLoader loader = createFxmlLoader("/fxml/NanoleafAurora.fxml");
                 FlowPane window;
@@ -101,7 +96,6 @@ public class NanoleafController {
         };
         devices.addListener(devicesListener);
         devices.addAll(deviceModel.getDevices());
-        log.debug("NanoleafAuroraController.initialize() – end: {}", clock.check());
     }
 
     //@Scheduled(initialDelay = 10000, fixedRate = 5000)
@@ -114,7 +108,7 @@ public class NanoleafController {
         }
     }
 
-    private PairedDeviceView createPiredDeviceView(Device device, FlowPane window, AuroraController deviceController) {
+    private PairedDeviceView createPiredDeviceView(NanoleafAuroraDevice device, FlowPane window, AuroraController deviceController) {
         PairedDeviceView view = new PairedDeviceView();
 
         EventHandler<MouseEvent> event = e -> {
@@ -187,7 +181,7 @@ public class NanoleafController {
         return view;
     }
 
-    private DiscoveredDeviceView createDiscoveredDeviceView(Device device) {
+    private DiscoveredDeviceView createDiscoveredDeviceView(NanoleafAuroraDevice device) {
         DiscoveredDeviceView view = new DiscoveredDeviceView();
         view.getStyleClass().add("actionTile");
         view.prefWidth(600);
@@ -260,8 +254,8 @@ public class NanoleafController {
             actionWindowDiscover.getChildren().add(spinner);
             actionWindowScroll.setContent(actionWindowDiscover);
             discoverButton.setDisable(true);
-            ObservableSet<Device> newDevices = FXCollections.observableSet(new HashSet<>());
-            SetChangeListener<Device> newDevicesListener = change -> {
+            ObservableSet<NanoleafAuroraDevice> newDevices = FXCollections.observableSet(new HashSet<>());
+            SetChangeListener<NanoleafAuroraDevice> newDevicesListener = change -> {
                 if (change.wasAdded()) {
                     log.debug("Added device to discover list.");
 
@@ -294,11 +288,11 @@ public class NanoleafController {
 
     }
 
-    private Mono<Boolean> pair(Device device) {
+    private Mono<Boolean> pair(NanoleafAuroraDevice device) {
         return deviceModel.pair(device);
     }
 
-    private Mono<Boolean> unpair(Device device) {
+    private Mono<Boolean> unpair(NanoleafAuroraDevice device) {
         return deviceModel.unpair(device);
     }
 
