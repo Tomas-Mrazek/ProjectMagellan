@@ -8,9 +8,8 @@
 <VBox
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="cz.jaktoviditoka.projectmagellan.controller.MainController"
-    fx:id="root"
-    prefHeight="900"
-    prefWidth="1600">
+    fx:id="root">
+	
     <children>
         <HBox
             fx:id="menu"

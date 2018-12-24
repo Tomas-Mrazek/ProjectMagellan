@@ -4,7 +4,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -12,6 +15,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 
+@Slf4j
 @SpringBootApplication
 public class ProjectMagellan extends Application {
 
@@ -30,6 +34,8 @@ public class ProjectMagellan extends Application {
         Parent rootNode = fxmlLoader.load();
         Scene scene = new Scene(rootNode);
         scene.getStylesheets().add("/style.css");
+        stage.setWidth(Screen.getPrimary().getBounds().getWidth() * 0.85);
+        stage.setHeight(Screen.getPrimary().getBounds().getHeight() * 0.85);
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();
