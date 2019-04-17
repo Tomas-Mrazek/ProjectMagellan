@@ -8,6 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ public class SingleGroupController {
     @Autowired
     GroupModel model;
 
+    @Getter
     @FXML
     GridPane root;
 
@@ -39,6 +42,8 @@ public class SingleGroupController {
     @FXML
     Button renameGroupButton;
 
+    @Getter
+    @Setter
     Group group;
 
     @FXML
